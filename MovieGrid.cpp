@@ -1,7 +1,6 @@
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPen>
-#include <QSocketNotifier>
 
 #include "MovieFactoryThread.h"
 #include "MovieWidget.h"
@@ -35,7 +34,11 @@ MovieGrid::MovieGrid(int _width,                      int _height,
 
 void MovieGrid::paintEvent(QPaintEvent *pe)
 {
-    QPainter painter(this);
+    if (pe->region().rectCount() != 1)
+    {
+        // skip recursive repain
+        return;
+    }
 
     for (int i = 0; i < scrollableGrid->list.size(); i++)
     {
