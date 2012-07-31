@@ -1,31 +1,39 @@
 #ifndef MOVIEWIDGETFACTORY_H
 #define MOVIEWIDGETFACTORY_H
 
-#include "Movie.h"
+#include "MovieWidget.h"
+
+class Movie;
 
 class QDir;
-#include <QObject>
 class QString;
+#include <QThread>
+class QWidget;
 
-class MovieWidgetFactory : public QObject
+class MovieWidgetFactory : public QThread
 {
     Q_OBJECT
-    enum MovieWidgetFactoryException
-    {
-        NoSuchDirectory
-    };
 
     public:
-        void createMovies(QString directoryName, int thumbnailWidth, int thumbnailHeight, bool _firstCall = true);
+        MovieWidgetFactory(QString directory, int thumbnailWidth, int thumbnailHeight);
+
+    protected:
+        void run();
 
     private:
-        void createDVDMovie(QDir directory);
+        QString directory;
+        int thumbnailWidth, thumbnailHeight;
 
-        QString stripFromTitles;
-        QString makeTitle(QString absoluteFilePath);
+        int hasVideoFiles(QString directory);
+        QString getFirstVideoFile(QString directory);
+
+        bool isVideoFile(QString filename);
+
+        QString makeTitle(QString filename);
 
     signals:
-        void movieCreated(Movie *);
+        void readyMovieWidget_Movie(Movie* );
+        void readyMovieWidget_Directory(QString, QString);
 };
 
 #endif // MOVIEWIDGETFACTORY_H

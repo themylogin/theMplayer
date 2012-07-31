@@ -3,65 +3,153 @@
 
 #include "MovieWidgetFactory.h"
 
-void MovieWidgetFactory::createMovies(QString directoryName, int thumbnailWidth, int thumbnailHeight, bool _firstCall)
+#include "Movie.h"
+
+MovieWidgetFactory::MovieWidgetFactory(QString directory, int thumbnailWidth, int thumbnailHeight)
 {
-    QDir dir(directoryName);
+    this->directory = directory;
+    this->thumbnailWidth = thumbnailWidth;
+    this->thumbnailHeight = thumbnailHeight;
+}
+
+void MovieWidgetFactory::run()
+{
+    QDir dir(this->directory);
     if (!dir.exists())
     {
-        throw NoSuchDirectory;
-    }
-    if (_firstCall)
-    {
-        stripFromTitles = dir.absolutePath();
+        return;
     }
 
-    if (dir.exists(QString("VIDEO_TS.VOB")))
-    {
-        // Is a DVD Directory
-        createDVDMovie(dir);
-    }
-    else
-    {
-        QStringList dirs = dir.entryList(QDir::Dirs, QDir::Name);
-        QStringList files = dir.entryList(QDir::Files, QDir::Name);
+    QStringList dirs = dir.entryList(QDir::Dirs, QDir::Name);
+    QStringList files = dir.entryList(QDir::Files, QDir::Name);
 
-        for (int i = 0; i < dirs.size(); ++i)
-        {            
-            if (!dirs.at(i).compare(".") || !dirs.at(i).compare(".."))
-            {
-                continue;
-            }
-            QString subdirectoryName = directoryName + QDir::separator() + dirs.at(i);
-            MovieWidgetFactory::createMovies(subdirectoryName, thumbnailWidth, thumbnailHeight, false);
-        }
-
-        for (int i = 0; i < files.size(); ++i)
+    for (int i = 0; i < dirs.size(); ++i)
+    {
+        if (!dirs.at(i).compare(".") || !dirs.at(i).compare(".."))
         {
-            QString cmp = files.at(i).toLower();
-            if (cmp.endsWith(".avi") || cmp.endsWith(".mkv"))
+            continue;
+        }
+        int countVideoFiles = this->hasVideoFiles(this->directory + QDir::separator() + dirs.at(i));
+        if (countVideoFiles > 0)
+        {
+            if (countVideoFiles == 1)
             {
-                QString fileName = directoryName + QDir::separator() + files.at(i);
-
+                QString videoFile = this->getFirstVideoFile(this->directory + QDir::separator() + dirs.at(i));
                 try
                 {
-                    Movie *movie = new Movie(fileName, makeTitle(fileName), thumbnailWidth, thumbnailHeight);
-                    emit movieCreated(movie);
+                    Movie* movie = new Movie(
+                                videoFile,
+                                this->makeTitle(dirs.at(i)), this->thumbnailWidth, this->thumbnailHeight);
+                    emit readyMovieWidget_Movie(movie);
                 }
                 catch (...)
                 {
                 }
             }
+            else
+            {
+                emit readyMovieWidget_Directory(
+                            this->directory + QDir::separator() + dirs.at(i),
+                            this->makeTitle(dirs.at(i)));
+            }
+        }
+    }
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+        if (this->isVideoFile(files.at(i)))
+        {
+            try
+            {
+                Movie* movie = new Movie(
+                            this->directory + QDir::separator() + files.at(i),
+                            this->makeTitle(files.at(i)), this->thumbnailWidth, this->thumbnailHeight);
+                emit readyMovieWidget_Movie(movie);
+            }
+            catch (...)
+            {
+            }
         }
     }
 }
 
-void MovieWidgetFactory::createDVDMovie(QDir directory)
+int MovieWidgetFactory::hasVideoFiles(QString directory)
 {
+    QDir dir(directory);
+    if (!dir.exists())
+    {
+        return 0;
+    }
+
+    int count = 0;
+    QStringList dirs = dir.entryList(QDir::Dirs, QDir::Name);
+    QStringList files = dir.entryList(QDir::Files, QDir::Name);
+
+    for (int i = 0; i < dirs.size(); ++i)
+    {
+        if (!dirs.at(i).compare(".") || !dirs.at(i).compare(".."))
+        {
+            continue;
+        }
+        count += this->hasVideoFiles(directory + QDir::separator() + dirs.at(i));
+    }
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+        if (this->isVideoFile(files.at(i)))
+        {
+            count++;
+        }
+    }
+
+    return count;
 }
 
-QString MovieWidgetFactory::makeTitle(QString absoluteFilePath)
+QString MovieWidgetFactory::getFirstVideoFile(QString directory)
 {
-    QString title = absoluteFilePath.replace(stripFromTitles, QString(""));
+    QDir dir(directory);
+    if (!dir.exists())
+    {
+        return 0;
+    }
+
+    int count = 0;
+    QStringList dirs = dir.entryList(QDir::Dirs, QDir::Name);
+    QStringList files = dir.entryList(QDir::Files, QDir::Name);
+
+    for (int i = 0; i < dirs.size(); ++i)
+    {
+        if (!dirs.at(i).compare(".") || !dirs.at(i).compare(".."))
+        {
+            continue;
+        }
+        QString videoFile = this->getFirstVideoFile(directory + QDir::separator() + dirs.at(i));
+        if (videoFile != "")
+        {
+            return videoFile;
+        }
+    }
+
+    for (int i = 0; i < files.size(); ++i)
+    {
+        if (this->isVideoFile(files.at(i)))
+        {
+            return directory + QDir::separator() + files.at(i);
+        }
+    }
+
+    return "";
+}
+
+bool MovieWidgetFactory::isVideoFile(QString filename)
+{
+    QString cmp = filename.toLower();
+    return cmp.endsWith(".avi") || cmp.endsWith(".mkv");
+}
+
+QString MovieWidgetFactory::makeTitle(QString filename)
+{
+    QString title = filename;
     title.replace(QRegExp("^/"), QString(""));
     title.replace(QRegExp("\\.[a-zA-Z0-9]*$"), QString(""));
     title.replace(QRegExp("\\.|_"), QString(" "));

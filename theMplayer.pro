@@ -9,9 +9,9 @@ SOURCES += main.cpp \
     ScrollableGrid.cpp \
     Utils.cpp \
     ScrollableGridWithCursor.cpp \
-    MovieWidgetFactoryThread.cpp \
     MovieWidgetFactory.cpp \
-    MovieWidget_Movie.cpp
+    MovieWidget_Movie.cpp \
+    MovieWidget_Directory.cpp
 HEADERS += SetupDialog.h \
     AbstractMovieGrid.h \
     TestMovieGrid.h \
@@ -25,9 +25,9 @@ HEADERS += SetupDialog.h \
     ScrollingDirection.h \
     Utils.h \
     ScrollableGridWithCursor.h \
-    MovieWidgetFactoryThread.h \
     MovieWidgetFactory.h \
-    MovieWidget_Movie.h
+    MovieWidget_Movie.h \
+    MovieWidget_Directory.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \

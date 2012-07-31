@@ -2,13 +2,12 @@
 #define MOVIEGRID_H
 
 #include <QList>
-class QSocketNotifier;
 class QString;
 #include <QWidget>
 
 #include "AbstractMovieGrid.h"
 #include "DrawingDirection.h"
-class MovieWidgetFactoryThread;
+class MovieWidgetFactory;
 class MovieWidget;
 class Movie;
 #include "ScrollableGridWithCursor.h"
@@ -27,10 +26,9 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
                   QWidget *parent = 0);
 
     protected:
-        QString directory;
-        MovieWidgetFactoryThread *movieFactoryThread;
+        MovieWidgetFactory* movieWidgetFactory;
 
-        ScrollableGridWithCursor<MovieWidget *> *scrollableGrid;
+        ScrollableGridWithCursor<MovieWidget*>* scrollableGrid;
         DrawingDirection drawingDirection;
 
         void paintEvent(QPaintEvent *pe);
@@ -38,8 +36,11 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
 
         void keyPressEvent(QKeyEvent *ke);
 
+        void addMovieWidget(MovieWidget* movieWidget);
+
     public slots:
-        void addMovie(Movie *movie);
+        void addMovieWidget_Movie(Movie*);
+        void addMovieWidget_Directory(QString, QString);
         
         void scrollForward();
         void scrollBackward();

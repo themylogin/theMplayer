@@ -1,9 +1,11 @@
+#include <QCoreApplication>
 #include <QKeyEvent>
 #include <QPainter>
 #include <QPen>
 
-#include "MovieWidgetFactoryThread.h"
+#include "MovieWidgetFactory.h"
 #include "MovieWidget.h"
+#include "MovieWidget_Directory.h"
 #include "MovieWidget_Movie.h"
 #include "MovieGrid.h"
 #include "Movie.h"
@@ -25,9 +27,10 @@ MovieGrid::MovieGrid(int _width,                      int _height,
     myPalette.setColor(backgroundRole(), QColor(0, 0, 0));
     setPalette(myPalette);
 
-    movieFactoryThread = new MovieWidgetFactoryThread(directory, movieWidth, movieHeight);
-    connect(movieFactoryThread, SIGNAL(movieCreated(Movie *)), this, SLOT(addMovie(Movie *)));
-    movieFactoryThread->start();
+    movieWidgetFactory = new MovieWidgetFactory(directory, this->movieWidth, this->movieHeight);
+    connect(movieWidgetFactory, SIGNAL(readyMovieWidget_Movie(Movie*)), this, SLOT(addMovieWidget_Movie(Movie*)));
+    connect(movieWidgetFactory, SIGNAL(readyMovieWidget_Directory(QString, QString)), this, SLOT(addMovieWidget_Directory(QString, QString)));
+    movieWidgetFactory->start();
 
     drawingDirection = dd;
     scrollableGrid = new ScrollableGridWithCursor<MovieWidget *>(cols, rows, drawingDirection);
@@ -96,10 +99,47 @@ void MovieGrid::keyPressEvent(QKeyEvent *ke)
     }
 }
 
-void MovieGrid::addMovie(Movie *movie)
+void MovieGrid::addMovieWidget(MovieWidget* movieWidget)
 {
-    scrollableGrid->addItem(new MovieWidget_Movie(this->movieWidth, this->movieHeight, movie, this));
+    QString title = movieWidget->windowTitle();
+
+    bool inserted = false;
+    for (int i = 0; i < this->scrollableGrid->list.size(); i++)
+    {
+        if (title <= this->scrollableGrid->list.at(i)->windowTitle())
+        {
+            this->scrollableGrid->list.insert(i, movieWidget);
+            inserted = true;
+            break;
+        }
+    }
+    if (!inserted)
+    {
+        this->scrollableGrid->list.append(movieWidget);
+    }
+
     update();
+}
+
+void MovieGrid::addMovieWidget_Directory(QString directory, QString title)
+{
+    this->addMovieWidget(new MovieWidget_Directory(
+                            this->movieWidth, this->movieHeight,
+                            title,
+                            new MovieGrid(
+                                this->AbstractMovieGrid::width,   this->AbstractMovieGrid::height,
+                                this->movieWidth,                 this->movieHeight,
+                                this->movieFieldHorizontalMargin, this->movieFieldHorizontalPadding,
+                                this->movieFieldVerticalMargin,   this->movieFieldVerticalPadding,
+                                directory,
+                                this->drawingDirection,
+                                (QWidget*)this->parent()),
+                            this));
+}
+
+void MovieGrid::addMovieWidget_Movie(Movie* movie)
+{
+    this->addMovieWidget(new MovieWidget_Movie(this->movieWidth, this->movieHeight, movie, this));
 }
 
 void MovieGrid::scrollForward()

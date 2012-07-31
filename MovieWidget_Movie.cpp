@@ -6,6 +6,7 @@ MovieWidget_Movie::MovieWidget_Movie(int width, int height, Movie* movie, QWidge
     : MovieWidget(width, height, movie->getTitle(), parent)
 {
     this->movie = movie;
+    setWindowTitle(movie->getTitle());
 }
 
 void MovieWidget_Movie::activate()
