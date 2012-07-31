@@ -16,22 +16,7 @@ template <class T> void ScrollableGrid<T>::addItem(T item)
 
 template <class T> T ScrollableGrid<T>::itemAt(int col, int row)
 {
-    int i;
-    switch (dd)
-    {
-        case Vertical:
-            i = (row + scrolled) * cols + col;
-            break;
-
-        case Horizontal:
-            i = (col + scrolled) * rows + row;
-            break;
-
-        default:
-            i = 0;
-            break;
-    }
-
+    int i = indexAt(col, row);
     if (i < list.size())
     {
         return list.at(i);
@@ -85,6 +70,23 @@ template <class T> void ScrollableGrid<T>::scroll(ScrollingDirection sd)
         default:
             break;
     }
+}
+
+template<class T>
+int ScrollableGrid<T>::indexAt(int col, int row)
+{
+    switch (this->dd)
+    {
+        case Vertical:
+            return (row + this->scrolled) * this->cols + col;
+            break;
+
+        case Horizontal:
+            return (col + this->scrolled) * this->rows + row;
+            break;
+    }
+
+    return 0;
 }
 
 #endif // SCROLLABLEGRID_CPP

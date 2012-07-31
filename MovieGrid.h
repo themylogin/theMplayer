@@ -11,7 +11,7 @@ class QString;
 class MovieFactoryThread;
 class MovieWidget;
 class Movie;
-#include "ScrollableGrid.h"
+#include "ScrollableGridWithCursor.h"
 #include "ScrollingDirection.h"
 
 class MovieGrid : public QWidget, public AbstractMovieGrid
@@ -30,7 +30,7 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
         QString directory;
         MovieFactoryThread *movieFactoryThread;
 
-        ScrollableGrid<MovieWidget *> *scrollableGrid;
+        ScrollableGridWithCursor<MovieWidget *> *scrollableGrid;
         DrawingDirection drawingDirection;
 
         void paintEvent(QPaintEvent *pe);

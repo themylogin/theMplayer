@@ -1,12 +1,13 @@
 #include <QKeyEvent>
 #include <QPainter>
+#include <QPen>
 #include <QSocketNotifier>
 
 #include "MovieFactoryThread.h"
 #include "MovieWidget.h"
 #include "MovieGrid.h"
 #include "Movie.h"
-#include "ScrollableGrid.cpp"
+#include "ScrollableGridWithCursor.cpp"
 
 MovieGrid::MovieGrid(int _width,                      int _height,
                      int _movieWidth,                 int _movieHeight,
@@ -29,7 +30,7 @@ MovieGrid::MovieGrid(int _width,                      int _height,
     movieFactoryThread->start();
 
     drawingDirection = dd;
-    scrollableGrid = new ScrollableGrid<MovieWidget *>(cols, rows, drawingDirection);
+    scrollableGrid = new ScrollableGridWithCursor<MovieWidget *>(cols, rows, drawingDirection);
 }
 
 void MovieGrid::paintEvent(QPaintEvent *pe)
@@ -48,12 +49,17 @@ void MovieGrid::draw(int col, int row, int x, int y)
 {
     QPainter painter(this);
 
-    MovieWidget *w = scrollableGrid->itemAt(col, row);
-
+    MovieWidget* w = this->scrollableGrid->itemAt(col, row);
     if (w != NULL)
     {
         w->setGeometry(QRect(x, y, w->size().width(), w->size().height()));
         w->show();
+
+        if (this->scrollableGrid->isCurrent(col, row))
+        {
+            painter.setPen(QPen(QColor(255, 0, 0)));
+            painter.drawRect(QRect(x - 2, y - 2, w->size().width() + 4, w->size().height() + 4));
+        }
     }
 }
 
@@ -62,12 +68,20 @@ void MovieGrid::keyPressEvent(QKeyEvent *ke)
     switch (ke->key())
     {
         case Qt::Key_Down:
+            this->scrollableGrid->down();
+            update();
+            break;
         case Qt::Key_Right:
-            scrollForward();
+            this->scrollableGrid->right();
+            update();
             break;
         case Qt::Key_Up:
+            this->scrollableGrid->up();
+            update();
+            break;
         case Qt::Key_Left:
-            scrollBackward();
+            this->scrollableGrid->left();
+            update();
             break;
     }
 }

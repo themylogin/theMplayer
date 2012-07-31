@@ -18,12 +18,14 @@ template <class T> class ScrollableGrid
         bool scrollingAllowed(ScrollingDirection sd);
         void scroll(ScrollingDirection sd);
 
-    private:
+    protected:
         int cols;
         int rows;
         DrawingDirection dd;        
 
         int scrolled;
+
+        int indexAt(int col, int row);
 };
 
 #endif // SCROLLABLEGRID_H
