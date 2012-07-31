@@ -4,6 +4,7 @@
 
 #include "Movie.h"
 #include "MovieWidget.h"
+#include "Utils.h"
 
 MovieWidget::MovieWidget(Movie *movie, QWidget *parent)
         : QWidget(parent), movie(movie)
@@ -26,45 +27,17 @@ void MovieWidget::paintEvent(QPaintEvent *pe)
     painter.setPen(borderPen);
     painter.drawRect(0, 0, width(), height());
 
-    QFont font = QFont("Impact", 24, 800, false);
+    int textHPadding = 10;
+    int textVPadding = 10;
+    int fontSize = 24;
+    int lineHeight = 34;
+    QFont font = QFont("Impact", fontSize, 800, false);
     QString text = windowTitle();
-
-    int width = 380;
-    QStringList lines;
-    QFontMetrics metrics(font);
-    QString notWrappedTextPart = text;
-    while (notWrappedTextPart != "")
-    {
-        bool wrapped = false;
-        for (int i = 1; i < notWrappedTextPart.length(); i++)
-        {
-            if (metrics.boundingRect(notWrappedTextPart.left(i)).width() > width)
-            {
-                if (i > 1)
-                {
-                    lines.append(notWrappedTextPart.left(i - 1));
-                    notWrappedTextPart = notWrappedTextPart.mid(i - 1);
-                }
-                else
-                {
-                    notWrappedTextPart = notWrappedTextPart.mid(i);
-                }
-                wrapped = true;
-                break;
-            }
-        }
-        if (!wrapped)
-        {
-            lines.append(notWrappedTextPart);
-            break;
-        }
-    }
-
-
+    QStringList lines = Utils::wrapText(font, windowTitle(), width() - 2 * textHPadding);
     for (int i = 0; i < lines.length(); i++)
     {
         QPainterPath path;
-        path.addText(10, 34 + i * 44, font, lines.at(i));
+        path.addText(textHPadding, textVPadding + fontSize + i * lineHeight, font, lines.at(i));
         painter.setPen(QColor(0, 0, 0));
         painter.setBrush(QColor(255, 255, 255));
         painter.drawPath(path);
