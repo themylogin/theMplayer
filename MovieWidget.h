@@ -9,12 +9,12 @@ class MovieWidget : public QWidget
     Q_OBJECT
 
     public:
-        MovieWidget(Movie *movie, QWidget *parent = 0);        
+        MovieWidget(Movie *movie, QWidget *parent = 0);
+        void activate();
 
     protected:
-        Movie *movie;
+        Movie* movie;
         void paintEvent(QPaintEvent *pe);
-        void mousePressEvent(QMouseEvent *event);
 };
 
 #endif // MOVIEWIDGET_H

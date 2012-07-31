@@ -82,6 +82,12 @@ bool ScrollableGridWithCursor<T>::isCurrent(int col, int row)
 }
 
 template<class T>
+T ScrollableGridWithCursor<T>::getActiveItem()
+{
+    return this->list.at(this->currentItem);
+}
+
+template<class T>
 bool ScrollableGridWithCursor<T>::setCurrentItem(int newCurrentItem)
 {
     if (newCurrentItem >= 0 && newCurrentItem < this->list.length())

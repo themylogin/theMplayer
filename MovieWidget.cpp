@@ -44,8 +44,7 @@ void MovieWidget::paintEvent(QPaintEvent *pe)
     }
 }
 
-
-void MovieWidget::mousePressEvent(QMouseEvent *event)
+void MovieWidget::activate()
 {
     movie->play();
 }

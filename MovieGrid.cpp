@@ -88,6 +88,10 @@ void MovieGrid::keyPressEvent(QKeyEvent *ke)
             this->scrollableGrid->left();
             update();
             break;
+
+        case Qt::Key_Return:
+            this->scrollableGrid->getActiveItem()->activate();
+            break;
     }
 }
 

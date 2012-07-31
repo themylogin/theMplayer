@@ -15,6 +15,7 @@ class ScrollableGridWithCursor : public ScrollableGrid<T>
         bool right();
 
         bool isCurrent(int col, int row);
+        T getActiveItem();
 
     protected:
         int currentItem;
