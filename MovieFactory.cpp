@@ -35,13 +35,19 @@ void MovieFactory::createMovies(QString directoryName, int thumbnailWidth, int t
 
         for (int i = 0; i < files.size(); ++i)
         {
-            QString fileName = directoryName + QDir::separator() + files.at(i);
-
-            try
+            QString cmp = files.at(i).toLower();
+            if (cmp.endsWith(".avi") || cmp.endsWith(".mkv"))
             {
-                Movie *movie = new Movie(fileName, makeTitle(fileName), thumbnailWidth, thumbnailHeight);
-                emit movieCreated(movie);
-            } catch (...) {
+                QString fileName = directoryName + QDir::separator() + files.at(i);
+
+                try
+                {
+                    Movie *movie = new Movie(fileName, makeTitle(fileName), thumbnailWidth, thumbnailHeight);
+                    emit movieCreated(movie);
+                }
+                catch (...)
+                {
+                }
             }
         }
     }
