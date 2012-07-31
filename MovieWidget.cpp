@@ -1,24 +1,23 @@
-#include <QImage>
 #include <QPainter>
 #include <QPainterPath>
 
-#include "Movie.h"
 #include "MovieWidget.h"
 #include "Utils.h"
 
-MovieWidget::MovieWidget(Movie *movie, QWidget *parent)
-        : QWidget(parent), movie(movie)
+MovieWidget::MovieWidget(int width, int height, QString title, QWidget *parent)
+        : QWidget(parent)
 {
+    resize(width, height);
 
-    int textHPadding = 10;
-    int textVPadding = 10;
     int fontSize = 24;
     int lineHeight = 34;
+    int textHPadding = 10;
+    int textVPadding = 10;
     QFont font = QFont("Impact", fontSize, 800, false);
-    QStringList lines = Utils::wrapText(font, movie->getTitle(), movie->getThumbnail()->size().width() - 2 * textHPadding);
+    QStringList lines = Utils::wrapText(font, title, this->width() - 2 * textHPadding);
 
-    this->movieTitle = QImage(QSize(movie->getThumbnail()->size().width(), lines.length() * lineHeight + 2 * textVPadding), QImage::Format_ARGB32);
-    QPainter painter(&this->movieTitle);
+    this->text = QImage(QSize(this->width(), lines.length() * lineHeight + 2 * textVPadding), QImage::Format_ARGB32);
+    QPainter painter(&this->text);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QColor(0, 0, 0));
     painter.setBrush(QColor(255, 255, 255));
@@ -30,25 +29,22 @@ MovieWidget::MovieWidget(Movie *movie, QWidget *parent)
     }
 }
 
-void MovieWidget::paintEvent(QPaintEvent *pe)
+void MovieWidget::paintBorder()
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-
-    painter.drawImage(QRect(0,      (height() - movie->getThumbnail()->height()) / 2,
-                            width(), movie->getThumbnail()->height()),
-                      *(movie->getThumbnail()));
-    painter.drawImage(0, 0, this->movieTitle);
 
     QPen borderPen;
     borderPen.setBrush(QColor(203, 203, 203));
     borderPen.setWidth(2);
     painter.setPen(borderPen);
-    painter.drawRect(0, 0, width(), height());
-
+    painter.drawRect(0, 0, this->width(), this->height());
 }
 
-void MovieWidget::activate()
+void MovieWidget::paintText()
 {
-    movie->play();
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    painter.drawImage(0, 0, this->text);
 }

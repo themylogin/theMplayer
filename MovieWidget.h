@@ -1,8 +1,8 @@
 #ifndef MOVIEWIDGET_H
 #define MOVIEWIDGET_H
 
-class Movie;
 #include <QImage>
+#include <QString>
 #include <QWidget>
 
 class MovieWidget : public QWidget
@@ -10,13 +10,14 @@ class MovieWidget : public QWidget
     Q_OBJECT
 
     public:
-        MovieWidget(Movie *movie, QWidget *parent = 0);
-        void activate();
+        MovieWidget(int width, int height, QString title, QWidget *parent = 0);
+        virtual void activate() = 0;
 
     protected:
-        Movie* movie;
-        QImage movieTitle;
-        void paintEvent(QPaintEvent *pe);
+        QImage text;
+
+        void paintBorder();
+        void paintText();
 };
 
 #endif // MOVIEWIDGET_H

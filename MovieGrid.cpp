@@ -4,6 +4,7 @@
 
 #include "MovieWidgetFactoryThread.h"
 #include "MovieWidget.h"
+#include "MovieWidget_Movie.h"
 #include "MovieGrid.h"
 #include "Movie.h"
 #include "ScrollableGridWithCursor.cpp"
@@ -97,9 +98,7 @@ void MovieGrid::keyPressEvent(QKeyEvent *ke)
 
 void MovieGrid::addMovie(Movie *movie)
 {
-    MovieWidget *movieWidget = new MovieWidget(movie, this);
-    movieWidget->resize(movieWidth, movieHeight);
-    scrollableGrid->addItem(movieWidget);
+    scrollableGrid->addItem(new MovieWidget_Movie(this->movieWidth, this->movieHeight, movie, this));
     update();
 }
 
