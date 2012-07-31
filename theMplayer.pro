@@ -5,12 +5,12 @@ SOURCES += main.cpp \
     MovieGrid.cpp \
     Movie.cpp \
     MovieFile.cpp \
-    MovieFactory.cpp \
-    MovieFactoryThread.cpp \
     MovieWidget.cpp \
     ScrollableGrid.cpp \
     Utils.cpp \
-    ScrollableGridWithCursor.cpp
+    ScrollableGridWithCursor.cpp \
+    MovieWidgetFactoryThread.cpp \
+    MovieWidgetFactory.cpp
 HEADERS += SetupDialog.h \
     AbstractMovieGrid.h \
     TestMovieGrid.h \
@@ -18,14 +18,14 @@ HEADERS += SetupDialog.h \
     MovieGrid.h \
     Movie.h \
     MovieFile.h \
-    MovieFactory.h \
-    MovieFactoryThread.h \
     MovieWidget.h \
     ScrollableGrid.h \
     DrawingDirection.h \
     ScrollingDirection.h \
     Utils.h \
-    ScrollableGridWithCursor.h
+    ScrollableGridWithCursor.h \
+    MovieWidgetFactoryThread.h \
+    MovieWidgetFactory.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \

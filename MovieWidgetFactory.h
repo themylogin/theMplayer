@@ -1,5 +1,5 @@
-#ifndef MOVIEFACTORY_H
-#define MOVIEFACTORY_H
+#ifndef MOVIEWIDGETFACTORY_H
+#define MOVIEWIDGETFACTORY_H
 
 #include "Movie.h"
 
@@ -7,10 +7,10 @@ class QDir;
 #include <QObject>
 class QString;
 
-class MovieFactory : public QObject
+class MovieWidgetFactory : public QObject
 {
     Q_OBJECT
-    enum MovieFactoryException
+    enum MovieWidgetFactoryException
     {
         NoSuchDirectory
     };
@@ -28,4 +28,4 @@ class MovieFactory : public QObject
         void movieCreated(Movie *);
 };
 
-#endif // MOVIEFACTORY_H
+#endif // MOVIEWIDGETFACTORY_H

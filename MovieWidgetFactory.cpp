@@ -1,9 +1,9 @@
 #include <QDir>
 #include <QString>
 
-#include "MovieFactory.h"
+#include "MovieWidgetFactory.h"
 
-void MovieFactory::createMovies(QString directoryName, int thumbnailWidth, int thumbnailHeight, bool _firstCall)
+void MovieWidgetFactory::createMovies(QString directoryName, int thumbnailWidth, int thumbnailHeight, bool _firstCall)
 {
     QDir dir(directoryName);
     if (!dir.exists())
@@ -19,7 +19,9 @@ void MovieFactory::createMovies(QString directoryName, int thumbnailWidth, int t
     {
         // Is a DVD Directory
         createDVDMovie(dir);
-    } else {
+    }
+    else
+    {
         QStringList dirs = dir.entryList(QDir::Dirs, QDir::Name);
         QStringList files = dir.entryList(QDir::Files, QDir::Name);
 
@@ -30,7 +32,7 @@ void MovieFactory::createMovies(QString directoryName, int thumbnailWidth, int t
                 continue;
             }
             QString subdirectoryName = directoryName + QDir::separator() + dirs.at(i);
-            MovieFactory::createMovies(subdirectoryName, thumbnailWidth, thumbnailHeight, false);
+            MovieWidgetFactory::createMovies(subdirectoryName, thumbnailWidth, thumbnailHeight, false);
         }
 
         for (int i = 0; i < files.size(); ++i)
@@ -53,11 +55,11 @@ void MovieFactory::createMovies(QString directoryName, int thumbnailWidth, int t
     }
 }
 
-void MovieFactory::createDVDMovie(QDir directory)
+void MovieWidgetFactory::createDVDMovie(QDir directory)
 {
 }
 
-QString MovieFactory::makeTitle(QString absoluteFilePath)
+QString MovieWidgetFactory::makeTitle(QString absoluteFilePath)
 {
     QString title = absoluteFilePath.replace(stripFromTitles, QString(""));
     title.replace(QRegExp("^/"), QString(""));

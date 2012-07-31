@@ -2,7 +2,7 @@
 #include <QPainter>
 #include <QPen>
 
-#include "MovieFactoryThread.h"
+#include "MovieWidgetFactoryThread.h"
 #include "MovieWidget.h"
 #include "MovieGrid.h"
 #include "Movie.h"
@@ -24,7 +24,7 @@ MovieGrid::MovieGrid(int _width,                      int _height,
     myPalette.setColor(backgroundRole(), QColor(0, 0, 0));
     setPalette(myPalette);
 
-    movieFactoryThread = new MovieFactoryThread(directory, movieWidth, movieHeight);
+    movieFactoryThread = new MovieWidgetFactoryThread(directory, movieWidth, movieHeight);
     connect(movieFactoryThread, SIGNAL(movieCreated(Movie *)), this, SLOT(addMovie(Movie *)));
     movieFactoryThread->start();
 

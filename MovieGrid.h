@@ -8,7 +8,7 @@ class QString;
 
 #include "AbstractMovieGrid.h"
 #include "DrawingDirection.h"
-class MovieFactoryThread;
+class MovieWidgetFactoryThread;
 class MovieWidget;
 class Movie;
 #include "ScrollableGridWithCursor.h"
@@ -28,7 +28,7 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
 
     protected:
         QString directory;
-        MovieFactoryThread *movieFactoryThread;
+        MovieWidgetFactoryThread *movieFactoryThread;
 
         ScrollableGridWithCursor<MovieWidget *> *scrollableGrid;
         DrawingDirection drawingDirection;
