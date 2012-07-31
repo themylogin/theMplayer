@@ -9,8 +9,8 @@ MovieWidget::MovieWidget(int width, int height, QString title, QWidget *parent)
 {
     resize(width, height);
 
-    int fontSize = 24;
-    int lineHeight = 34;
+    int fontSize = 32;
+    int lineHeight = 42;
     int textHPadding = 10;
     int textVPadding = 10;
     QFont font = QFont("Impact", fontSize, 800, false);
@@ -19,7 +19,9 @@ MovieWidget::MovieWidget(int width, int height, QString title, QWidget *parent)
     this->text = QImage(QSize(this->width(), lines.length() * lineHeight + 2 * textVPadding), QImage::Format_ARGB32);
     QPainter painter(&this->text);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.setPen(QColor(0, 0, 0));
+    QPen pen(QColor(0, 0, 0));
+    pen.setWidth(3);
+    painter.setPen(pen);
     painter.setBrush(QColor(255, 255, 255));
     for (int i = 0; i < lines.length(); i++)
     {
