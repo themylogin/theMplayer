@@ -17,7 +17,7 @@ MovieWidget::MovieWidget(Movie *movie, QWidget *parent)
     QFont font = QFont("Impact", fontSize, 800, false);
     QStringList lines = Utils::wrapText(font, movie->getTitle(), movie->getThumbnail()->size().width() - 2 * textHPadding);
 
-    this->movieTitle = QImage(QSize(movie->getThumbnail()->size().width(), lines.length() * lineHeight), QImage::Format_ARGB32);
+    this->movieTitle = QImage(QSize(movie->getThumbnail()->size().width(), lines.length() * lineHeight + 2 * textVPadding), QImage::Format_ARGB32);
     QPainter painter(&this->movieTitle);
     painter.setRenderHint(QPainter::Antialiasing);
     painter.setPen(QColor(0, 0, 0));
