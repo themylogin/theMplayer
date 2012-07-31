@@ -18,8 +18,6 @@ void AbstractMovieGrid::calculateDimensions()
 {
     cols = (width - 2 * movieFieldHorizontalMargin + movieFieldHorizontalPadding) / (movieWidth + movieFieldHorizontalPadding);
     rows = (height - 2 * movieFieldVerticalMargin + movieFieldVerticalPadding) / (movieHeight + movieFieldVerticalPadding);
-    // qDebug() << "cols(" << cols << ") =  " << width << movieFieldHorizontalMargin << movieFieldHorizontalPadding << movieWidth;
-    // qDebug() << "rows(" << rows << ") =  " << height << movieFieldVerticalMargin << movieFieldVerticalPadding << movieHeight;
 }
 
 void AbstractMovieGrid::correctMargins()

@@ -30,44 +30,6 @@ MovieGrid::MovieGrid(int _width,                      int _height,
 
     drawingDirection = dd;
     scrollableGrid = new ScrollableGrid<MovieWidget *>(cols, rows, drawingDirection);
-
-    // initLirc();
-}
-
-void MovieGrid::initLirc()
-{
-    int lirc_socket = lirc_init("theMplayer", 1);
-    if (lirc_socket == -1)
-    {
-        return;
-    }
-
-    if (lirc_readconfig(NULL, &lircConfig, NULL) != 0)
-    {
-        return;
-    }
-
-    lircNotifier = new QSocketNotifier(lirc_socket, QSocketNotifier::Read, this);
-    connect(lircNotifier, SIGNAL(activated(int)), this, SLOT(lircEvent(int)));
-}
-
-void MovieGrid::lircEvent(int socket)
-{
-    // http://www.lirc.org/html/technical.html
-    /*lirc_nextcode(&code)==0)
-                {
-                        if(code==NULL) continue;
-                        while((ret=lirc_code2char(config,code,&c))==0 &&
-                              c!=NULL)
-                        {
-#ifdef DEBUG
-                                printf("Execing command \"%s\"\n",c);
-#endif
-                                system(c);
-                        }
-                        free(code);
-                        if(ret==-1) break;
-                }*/
 }
 
 void MovieGrid::paintEvent(QPaintEvent *pe)

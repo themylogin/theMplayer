@@ -8,7 +8,6 @@ class QString;
 
 #include "AbstractMovieGrid.h"
 #include "DrawingDirection.h"
-#include <lirc/lirc_client.h>
 class MovieFactoryThread;
 class MovieWidget;
 class Movie;
@@ -34,10 +33,6 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
         ScrollableGrid<MovieWidget *> *scrollableGrid;
         DrawingDirection drawingDirection;
 
-        void initLirc();
-        struct lirc_config *lircConfig;
-        QSocketNotifier *lircNotifier;
-
         void paintEvent(QPaintEvent *pe);
         void draw(int col, int row, int x, int y);
 
@@ -45,7 +40,6 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
 
     public slots:
         void addMovie(Movie *movie);
-        void lircEvent(int socket);
         
         void scrollForward();
         void scrollBackward();
