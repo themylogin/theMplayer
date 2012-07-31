@@ -1,3 +1,6 @@
+#include <QCryptographicHash>
+#include <QDir>
+#include <QFile>
 #include <QImage>
 #include <QProcess>
 #include <QString>
@@ -7,13 +10,38 @@
 Movie::Movie(QString filename, QString title, int thumbnailWidth, int thumbnailHeight)
         : filename(filename), title(title)
 {
-    movieFile = new MovieFile(filename);
+    QString thumbnailsDir = QDir::homePath() + "/.thumbnails";
+    if (!QDir(thumbnailsDir).exists())
+    {
+        QDir(thumbnailsDir).mkdir(thumbnailsDir);
+    }
 
-    thumbnailHeight = -1;
-    thumbnailBuf = movieFile->getRGB32Thumbnail(thumbnailWidth, thumbnailHeight);
-    thumbnail = new QImage(thumbnailBuf, thumbnailWidth, thumbnailHeight, QImage::Format_ARGB32);
+    QString theMplayerThumbnailsDir = thumbnailsDir + "/theMplayer";
+    if (!QDir(theMplayerThumbnailsDir).exists())
+    {
+        QDir(theMplayerThumbnailsDir).mkdir(theMplayerThumbnailsDir);
+    }
 
-    delete movieFile;
+    QString cacheFilename = theMplayerThumbnailsDir + "/" + QString(QCryptographicHash::hash(
+        (filename + "#" + QString::number(thumbnailWidth) + "#" + QString::number(thumbnailHeight)).toUtf8(),
+        QCryptographicHash::Md5).toHex()) + ".jpg";
+    if (QFile::exists(cacheFilename))
+    {
+        thumbnailBuf = NULL;
+        thumbnail = new QImage(cacheFilename);
+    }
+    else
+    {
+        movieFile = new MovieFile(filename);
+
+        thumbnailHeight = -1;
+        thumbnailBuf = movieFile->getRGB32Thumbnail(thumbnailWidth, thumbnailHeight);
+        thumbnail = new QImage(thumbnailBuf, thumbnailWidth, thumbnailHeight, QImage::Format_ARGB32);
+
+        delete movieFile;
+
+        thumbnail->save(cacheFilename, 0, 85);
+    }
 }
 
 QImage *Movie::getThumbnail() const
@@ -39,5 +67,8 @@ void Movie::play()
 Movie::~Movie()
 {
     delete thumbnail;
-    delete thumbnailBuf;
+    if (thumbnailBuf != NULL)
+    {
+        delete thumbnailBuf;
+    }
 }
