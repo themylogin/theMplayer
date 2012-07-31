@@ -19,11 +19,20 @@
 #include "SetupDialog.h"
 #include "TestMovieGrid.h"
 
+#include <QDebug>
+
 SetupDialog::SetupDialog(QWidget *parent, Qt::WindowFlags f)
         : QDialog(parent, f)
 {
-    screenWidth = QApplication::desktop()->screenGeometry().width();
-    screenHeight = QApplication::desktop()->screenGeometry().height();
+    screenWidth = 0;
+    for (int screen = 0; screen < QApplication::desktop()->screenCount(); screen++)
+    {
+        if (QApplication::desktop()->screenGeometry(screen).width() > screenWidth)
+        {
+            screenWidth = QApplication::desktop()->screenGeometry(screen).width();
+            screenHeight = QApplication::desktop()->screenGeometry(screen).height();
+        }
+    }
 
     QSettings settings;
     setWindowTitle(tr("theMplayer setup"));
