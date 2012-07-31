@@ -2,6 +2,7 @@
 #define MOVIEWIDGET_H
 
 class Movie;
+#include <QImage>
 #include <QWidget>
 
 class MovieWidget : public QWidget
@@ -14,6 +15,7 @@ class MovieWidget : public QWidget
 
     protected:
         Movie* movie;
+        QImage movieTitle;
         void paintEvent(QPaintEvent *pe);
 };
 
