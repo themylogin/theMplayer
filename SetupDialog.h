@@ -21,6 +21,9 @@ class SetupDialog : public QDialog
         SetupDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
 
     private:
+        int screenWidth;
+        int screenHeight;
+
         QLabel *directoryLabel;
         QLineEdit *directoryEdit;
         QPushButton *directorySelectButton;

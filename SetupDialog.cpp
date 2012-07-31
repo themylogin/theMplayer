@@ -22,6 +22,9 @@
 SetupDialog::SetupDialog(QWidget *parent, Qt::WindowFlags f)
         : QDialog(parent, f)
 {
+    screenWidth = QApplication::desktop()->screenGeometry().width();
+    screenHeight = QApplication::desktop()->screenGeometry().height();
+
     QSettings settings;
     setWindowTitle(tr("theMplayer setup"));
 
@@ -153,8 +156,8 @@ SetupDialog::SetupDialog(QWidget *parent, Qt::WindowFlags f)
     miscGroupBox->setLayout(miscLayout);
 
     // Create movieTestGrid
-    movieTestGrid = new TestMovieGrid(1920 / 2,
-                                      1080 / 2,
+    movieTestGrid = new TestMovieGrid(screenWidth / 2,
+                                      screenHeight / 2,
 
                                       movieWidthSpinBox->value() / 2,
                                       movieHeightSpinBox->value() / 2,
@@ -186,14 +189,14 @@ SetupDialog::SetupDialog(QWidget *parent, Qt::WindowFlags f)
     dialogLayout->addWidget(buttonBox, 4, 0, 1, 2);
     setLayout(dialogLayout);
 
-    resize(1920 / 2,
-           1080 / 2);
+    resize(screenWidth / 2,
+           screenHeight / 2);
 
 }
 
 int SetupDialog::movieHeightValue(int movieWidthValue)
 {
-    return (int) (movieWidthValue / 4.0 * 3.0 + 0.5);
+    return (int) ((float)movieWidthValue / screenWidth * screenHeight + 0.5);
 }
 
 void SetupDialog::movieWidthChanged(int newValue)
