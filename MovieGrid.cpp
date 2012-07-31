@@ -36,7 +36,7 @@ void MovieGrid::paintEvent(QPaintEvent *pe)
 {
     if (pe->region().rectCount() != 1)
     {
-        // skip recursive repain
+        // skip recursive repaints
         return;
     }
 
@@ -60,7 +60,9 @@ void MovieGrid::draw(int col, int row, int x, int y)
 
         if (this->scrollableGrid->isCurrent(col, row))
         {
-            painter.setPen(QPen(QColor(255, 0, 0)));
+            QPen pen(QColor(255, 0, 0));
+            pen.setWidth(4);
+            painter.setPen(pen);
             painter.drawRect(QRect(x - 2, y - 2, w->size().width() + 4, w->size().height() + 4));
         }
     }
