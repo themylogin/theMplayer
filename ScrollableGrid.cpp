@@ -1,31 +1,31 @@
-#ifndef SCROLLABLEGRID_CPP
-#define SCROLLABLEGRID_CPP
-
 #include "ScrollableGrid.h"
 
-template <class T> ScrollableGrid<T>::ScrollableGrid(int cols, int rows, DrawingDirection dd)
-        : cols(cols), rows(rows), dd(dd)
+ScrollableGrid::ScrollableGrid(int cols, int rows, DrawingDirection dd)
 {
-    scrolled = 0;
+    this->cols = cols;
+    this->rows = rows;
+    this->dd   = dd;
+
+    this->scrolled = 0;
 }
 
-template <class T> void ScrollableGrid<T>::addItem(T item)
+int ScrollableGrid::indexAt(int col, int row)
 {
-    list.append(item);
-}
-
-template <class T> T ScrollableGrid<T>::itemAt(int col, int row)
-{
-    int i = indexAt(col, row);
-    if (i < list.size())
+    switch (this->dd)
     {
-        return list.at(i);
+        case Vertical:
+            return (row + this->scrolled) * this->cols + col;
+            break;
+
+        case Horizontal:
+            return (col + this->scrolled) * this->rows + row;
+            break;
     }
 
-    return NULL;
+    return 0;
 }
 
-template <class T> bool ScrollableGrid<T>::scrollingAllowed(ScrollingDirection sd)
+bool ScrollableGrid::scrollingAllowed(ScrollingDirection sd, int items)
 {
     switch (sd)
     {
@@ -42,11 +42,11 @@ template <class T> bool ScrollableGrid<T>::scrollingAllowed(ScrollingDirection s
             switch (dd)
             {
                 case Vertical:
-                    return scrolled + 1 < list.size() / cols;
+                    return scrolled + 1 < items / cols;
                     break;
 
                 case Horizontal:
-                    return scrolled + 1 < list.size() / rows;
+                    return scrolled + 1 < items / rows;
                     break;
             }
             break;
@@ -55,7 +55,7 @@ template <class T> bool ScrollableGrid<T>::scrollingAllowed(ScrollingDirection s
     return false;
 }
 
-template <class T> void ScrollableGrid<T>::scroll(ScrollingDirection sd)
+void ScrollableGrid::scroll(ScrollingDirection sd)
 {
     switch (sd)
     {
@@ -71,22 +71,3 @@ template <class T> void ScrollableGrid<T>::scroll(ScrollingDirection sd)
             break;
     }
 }
-
-template<class T>
-int ScrollableGrid<T>::indexAt(int col, int row)
-{
-    switch (this->dd)
-    {
-        case Vertical:
-            return (row + this->scrolled) * this->cols + col;
-            break;
-
-        case Horizontal:
-            return (col + this->scrolled) * this->rows + row;
-            break;
-    }
-
-    return 0;
-}
-
-#endif // SCROLLABLEGRID_CPP

@@ -1,25 +1,24 @@
 #ifndef SCROLLABLEGRIDWITHCURSOR_H
 #define SCROLLABLEGRIDWITHCURSOR_H
 
-#include "ScrollableGrid.cpp"
+#include "ScrollableGrid.h"
 
-template<class T>
-class ScrollableGridWithCursor : public ScrollableGrid<T>
+class ScrollableGridWithCursor : public ScrollableGrid
 {
     public:
         ScrollableGridWithCursor(int cols, int rows, DrawingDirection dd);
 
-        bool up();
-        bool down();
-        bool left();
-        bool right();
+        bool up(int items);
+        bool down(int items);
+        bool left(int items);
+        bool right(int items);
 
+        int currentIndex();
         bool isCurrent(int col, int row);
-        T getActiveItem();
 
     protected:
         int currentItem;
-        bool setCurrentItem(int newCurrentItem);
+        bool setCurrentItem(int newCurrentItem, int items);
 };
 
 #endif // SCROLLABLEGRIDWITHCURSOR_H

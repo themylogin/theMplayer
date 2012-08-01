@@ -27,8 +27,9 @@ class MovieGrid : public QWidget, public AbstractMovieGrid
 
     protected:
         MovieWidgetFactory* movieWidgetFactory;
+        QList<MovieWidget*> movieWidgets;
 
-        ScrollableGridWithCursor<MovieWidget*>* scrollableGrid;
+        ScrollableGridWithCursor* scrollableGrid;
         DrawingDirection drawingDirection;
 
         void paintEvent(QPaintEvent *pe);

@@ -9,7 +9,7 @@
 #include "MovieWidget_Movie.h"
 #include "MovieGrid.h"
 #include "Movie.h"
-#include "ScrollableGridWithCursor.cpp"
+#include "ScrollableGridWithCursor.h"
 
 MovieGrid::MovieGrid(int _width,                      int _height,
                      int _movieWidth,                 int _movieHeight,
@@ -33,7 +33,7 @@ MovieGrid::MovieGrid(int _width,                      int _height,
     movieWidgetFactory->start();
 
     drawingDirection = dd;
-    scrollableGrid = new ScrollableGridWithCursor<MovieWidget *>(cols, rows, drawingDirection);
+    scrollableGrid = new ScrollableGridWithCursor(cols, rows, drawingDirection);
 }
 
 void MovieGrid::paintEvent(QPaintEvent *pe)
@@ -44,9 +44,9 @@ void MovieGrid::paintEvent(QPaintEvent *pe)
         return;
     }
 
-    for (int i = 0; i < scrollableGrid->list.size(); i++)
+    for (int i = 0; i < this->movieWidgets.size(); i++)
     {
-        scrollableGrid->list.at(i)->hide();
+        this->movieWidgets[i]->hide();
     }
 
     drawAll(drawingDirection);
@@ -56,9 +56,10 @@ void MovieGrid::draw(int col, int row, int x, int y)
 {
     QPainter painter(this);
 
-    MovieWidget* w = this->scrollableGrid->itemAt(col, row);
-    if (w != NULL)
+    int index = this->scrollableGrid->indexAt(col, row);
+    if (index < this->movieWidgets.size())
     {
+        MovieWidget* w = this->movieWidgets[index];
         w->setGeometry(QRect(x, y, w->size().width(), w->size().height()));
         w->show();
 
@@ -77,24 +78,24 @@ void MovieGrid::keyPressEvent(QKeyEvent *ke)
     switch (ke->key())
     {
         case Qt::Key_Down:
-            this->scrollableGrid->down();
+            this->scrollableGrid->down(this->movieWidgets.length());
             update();
             break;
         case Qt::Key_Right:
-            this->scrollableGrid->right();
+            this->scrollableGrid->right(this->movieWidgets.length());
             update();
             break;
         case Qt::Key_Up:
-            this->scrollableGrid->up();
+            this->scrollableGrid->up(this->movieWidgets.length());
             update();
             break;
         case Qt::Key_Left:
-            this->scrollableGrid->left();
+            this->scrollableGrid->left(this->movieWidgets.length());
             update();
             break;
 
         case Qt::Key_Return:
-            this->scrollableGrid->getActiveItem()->activate();
+            this->movieWidgets[this->scrollableGrid->currentIndex()]->activate();
             break;
     }
 }
@@ -104,18 +105,18 @@ void MovieGrid::addMovieWidget(MovieWidget* movieWidget)
     QString title = movieWidget->windowTitle();
 
     bool inserted = false;
-    for (int i = 0; i < this->scrollableGrid->list.size(); i++)
+    for (int i = 0; i < this->movieWidgets.size(); i++)
     {
-        if (title <= this->scrollableGrid->list.at(i)->windowTitle())
+        if (title <= this->movieWidgets[i]->windowTitle())
         {
-            this->scrollableGrid->list.insert(i, movieWidget);
+            this->movieWidgets.insert(i, movieWidget);
             inserted = true;
             break;
         }
     }
     if (!inserted)
     {
-        this->scrollableGrid->list.append(movieWidget);
+        this->movieWidgets.append(movieWidget);
     }
 
     update();
@@ -144,7 +145,7 @@ void MovieGrid::addMovieWidget_Movie(Movie* movie)
 
 void MovieGrid::scrollForward()
 {
-    if (scrollableGrid->scrollingAllowed(Forward))
+    if (scrollableGrid->scrollingAllowed(Forward, this->movieWidgets.length()))
     {
         scrollableGrid->scroll(Forward);
         update();
@@ -153,7 +154,7 @@ void MovieGrid::scrollForward()
 
 void MovieGrid::scrollBackward()
 {
-    if (scrollableGrid->scrollingAllowed(Backward))
+    if (scrollableGrid->scrollingAllowed(Backward, this->movieWidgets.length()))
     {
         scrollableGrid->scroll(Backward);
         update();

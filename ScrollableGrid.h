@@ -1,21 +1,17 @@
 #ifndef SCROLLABLEGRID_H
 #define SCROLLABLEGRID_H
 
-#include <QList>
-
 #include "DrawingDirection.h"
 #include "ScrollingDirection.h"
 
-template <class T> class ScrollableGrid
+class ScrollableGrid
 {
     public:
         ScrollableGrid(int cols, int rows, DrawingDirection dd);
 
-        QList <T> list;
-        void addItem(T item);
-        T itemAt(int col, int row);
+        int indexAt(int col, int row);
 
-        bool scrollingAllowed(ScrollingDirection sd);
+        bool scrollingAllowed(ScrollingDirection sd, int items);
         void scroll(ScrollingDirection sd);
 
     protected:
@@ -24,8 +20,6 @@ template <class T> class ScrollableGrid
         DrawingDirection dd;        
 
         int scrolled;
-
-        int indexAt(int col, int row);
 };
 
 #endif // SCROLLABLEGRID_H

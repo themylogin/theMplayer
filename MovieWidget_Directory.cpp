@@ -16,11 +16,6 @@ void MovieWidget_Directory::activate()
 
 void MovieWidget_Directory::paintEvent(QPaintEvent *pe)
 {
-    /*QPainter painter(this);
-    painter.drawImage(QRect(0,      (height() - this->movie->getThumbnail()->height()) / 2,
-                            width(), this->movie->getThumbnail()->height()),
-                      *(this->movie->getThumbnail()));*/
-
     this->paintText();
     this->paintBorder();
 }
