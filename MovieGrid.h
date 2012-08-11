@@ -5,7 +5,7 @@
 class QString;
 #include <QWidget>
 
-#include "AbstractMovieGrid.h"
+#include "GridLayout.h"
 #include "DrawingDirection.h"
 class MovieWidgetFactory;
 class MovieWidget;
@@ -13,7 +13,7 @@ class Movie;
 #include "ScrollableGridWithCursor.h"
 #include "ScrollingDirection.h"
 
-class MovieGrid : public QWidget, public AbstractMovieGrid
+class MovieGrid : public QWidget, public GridLayout
 {
     Q_OBJECT
     public:

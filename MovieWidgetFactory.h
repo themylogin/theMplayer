@@ -6,6 +6,7 @@
 class Movie;
 
 class QDir;
+#include <QMutex>
 class QString;
 #include <QThread>
 class QWidget;
@@ -30,6 +31,8 @@ class MovieWidgetFactory : public QThread
         bool isVideoFile(QString filename);
 
         QString makeTitle(QString filename);
+
+        static QMutex movieFileMutex;
 
     signals:
         void readyMovieWidget_Movie(Movie* );

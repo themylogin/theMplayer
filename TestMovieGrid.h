@@ -3,9 +3,9 @@
 
 #include <QWidget>
 
-#include "AbstractMovieGrid.h"
+#include "GridLayout.h"
 
-class TestMovieGrid : public AbstractMovieGrid, public QWidget
+class TestMovieGrid : public GridLayout, public QWidget
 {
     public:
         TestMovieGrid(int _width,                      int _height,

@@ -1,6 +1,5 @@
 SOURCES += main.cpp \
     SetupDialog.cpp \
-    AbstractMovieGrid.cpp \
     TestMovieGrid.cpp \
     MovieGrid.cpp \
     Movie.cpp \
@@ -11,9 +10,9 @@ SOURCES += main.cpp \
     ScrollableGridWithCursor.cpp \
     MovieWidgetFactory.cpp \
     MovieWidget_Movie.cpp \
-    MovieWidget_Directory.cpp
+    MovieWidget_Directory.cpp \
+    GridLayout.cpp
 HEADERS += SetupDialog.h \
-    AbstractMovieGrid.h \
     TestMovieGrid.h \
     main.h \
     MovieGrid.h \
@@ -27,9 +26,9 @@ HEADERS += SetupDialog.h \
     ScrollableGridWithCursor.h \
     MovieWidgetFactory.h \
     MovieWidget_Movie.h \
-    MovieWidget_Directory.h
+    MovieWidget_Directory.h \
+    GridLayout.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
-    -lswscale \
-    -llirc_client
+    -lswscale

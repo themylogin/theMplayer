@@ -238,12 +238,12 @@ void SetupDialog::updateTestGridValues()
 {
     if (movieTestGrid != NULL)
     {
-        movieTestGrid->setMovieWidth(movieWidthSpinBox->value() / 2);
-        movieTestGrid->setMovieHeight(movieHeightSpinBox->value() / 2);
-        movieTestGrid->setMovieFieldHorizontalMargin(movieFieldHMarginSpinBox->value() / 2);
-        movieTestGrid->setMovieFieldHorizontalPadding(movieFieldHPaddingSpinBox->value() / 2);
-        movieTestGrid->setMovieFieldVerticalMargin(movieFieldVMarginSpinBox->value() / 2);        
-        movieTestGrid->setMovieFieldVerticalPadding(movieFieldVPaddingSpinBox->value() / 2);
+        movieTestGrid->setElementWidth(movieWidthSpinBox->value() / 2);
+        movieTestGrid->setElementHeight(movieHeightSpinBox->value() / 2);
+        movieTestGrid->setGridHPadding(movieFieldHMarginSpinBox->value() / 2);
+        movieTestGrid->setGridVPadding(movieFieldVMarginSpinBox->value() / 2);
+        movieTestGrid->setElementHMargin(movieFieldHPaddingSpinBox->value() / 2);
+        movieTestGrid->setElementVMargin(movieFieldVPaddingSpinBox->value() / 2);
 
         movieTestGrid->update();
     }

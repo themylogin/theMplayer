@@ -18,10 +18,10 @@ MovieGrid::MovieGrid(int _width,                      int _height,
                      QString directory,
                      DrawingDirection dd,
                      QWidget *parent)
-    : QWidget(parent), AbstractMovieGrid(_width,                      _height,
-                                         _movieWidth,                 _movieHeight,
-                                         _movieFieldHorizontalMargin, _movieFieldHorizontalPadding,
-                                         _movieFieldVerticalMargin,   _movieFieldVerticalPadding)
+    : QWidget(parent), GridLayout(_width,                      _height,
+                                  _movieFieldHorizontalMargin, _movieFieldVerticalMargin,
+                                  _movieWidth,                 _movieHeight,
+                                  _movieFieldHorizontalPadding, _movieFieldVerticalPadding)
 {
     QPalette myPalette = palette();
     myPalette.setColor(backgroundRole(), QColor(0, 0, 0));

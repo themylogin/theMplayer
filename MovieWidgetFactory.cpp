@@ -5,6 +5,8 @@
 
 #include "Movie.h"
 
+QMutex MovieWidgetFactory::movieFileMutex;
+
 MovieWidgetFactory::MovieWidgetFactory(QString directory, int thumbnailWidth, int thumbnailHeight)
 {
     this->directory = directory;
@@ -37,6 +39,7 @@ void MovieWidgetFactory::run()
                 QString videoFile = this->getFirstVideoFile(this->directory + QDir::separator() + dirs.at(i));
                 try
                 {
+                    QMutexLocker lock(&this->movieFileMutex);
                     Movie* movie = new Movie(
                                 videoFile,
                                 this->makeTitle(dirs.at(i)), this->thumbnailWidth, this->thumbnailHeight);
@@ -61,6 +64,7 @@ void MovieWidgetFactory::run()
         {
             try
             {
+                QMutexLocker lock(&this->movieFileMutex);
                 Movie* movie = new Movie(
                             this->directory + QDir::separator() + files.at(i),
                             this->makeTitle(files.at(i)), this->thumbnailWidth, this->thumbnailHeight);
