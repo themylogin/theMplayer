@@ -11,7 +11,7 @@ class QLineEdit;
 class QPushButton;
 class QSpinBox;
 
-class TestMovieGrid;
+class TestMovieWidget;
 
 class SetupDialog : public QDialog
 {
@@ -57,7 +57,7 @@ class SetupDialog : public QDialog
         QGridLayout *miscLayout;
         QGroupBox *miscGroupBox;
 
-        TestMovieGrid *movieTestGrid;
+        TestMovieWidget *movieTestGrid;
 
         QDialogButtonBox *buttonBox;
         QPushButton *okButton;

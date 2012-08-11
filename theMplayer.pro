@@ -1,6 +1,5 @@
 SOURCES += main.cpp \
     SetupDialog.cpp \
-    TestMovieGrid.cpp \
     MovieGrid.cpp \
     Movie.cpp \
     MovieFile.cpp \
@@ -11,9 +10,9 @@ SOURCES += main.cpp \
     MovieWidgetFactory.cpp \
     MovieWidget_Movie.cpp \
     MovieWidget_Directory.cpp \
-    GridLayout.cpp
+    GridLayout.cpp \
+    TestMovieWidget.cpp
 HEADERS += SetupDialog.h \
-    TestMovieGrid.h \
     main.h \
     MovieGrid.h \
     Movie.h \
@@ -27,7 +26,8 @@ HEADERS += SetupDialog.h \
     MovieWidgetFactory.h \
     MovieWidget_Movie.h \
     MovieWidget_Directory.h \
-    GridLayout.h
+    GridLayout.h \
+    TestMovieWidget.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
