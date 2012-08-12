@@ -2,27 +2,20 @@
 
 #include <QApplication>
 #include <QDesktopWidget>
+#include <QPainter>
 #include <QSettings>
 
 #include "Movie.h"
+#include "Utils.h"
 
 MovieCollection::MovieCollection(QString directory, QWidget* parent) :
     QWidget(parent)
 {
     QSettings settings;
 
-    int screenWidth = 0;
-    int screenHeight = 0;
-    for (int screen = 0; screen < QApplication::desktop()->screenCount(); screen++)
-    {
-        if (QApplication::desktop()->screenGeometry(screen).width() > screenWidth)
-        {
-            screenWidth = QApplication::desktop()->screenGeometry(screen).width();
-            screenHeight = QApplication::desktop()->screenGeometry(screen).height();
-        }
-    }
+    Utils::getWidestScreenDimensions(this->screenWidth, this->screenHeight);
 
-    this->layout = new GridLayout(screenWidth, screenHeight,
+    this->layout = new GridLayout(this->screenWidth, this->screenHeight,
                                   settings.value("movieHPadding").toInt(), settings.value("movieVPadding").toInt(),
                                   settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt(),
                                   settings.value("movieHMargin").toInt(), settings.value("movieVMargin").toInt());
@@ -61,11 +54,14 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    QPen borderPen;
-    borderPen.setBrush(QColor(203, 203, 203));
-    borderPen.setWidth(2);
-    painter.setPen(borderPen);
-    painter.drawRect(0, 0, this->width(), this->height());
+    if (this->width() != this->screenWidth && this->height() != this->screenHeight)
+    {
+        QPen borderPen;
+        borderPen.setBrush(QColor(203, 203, 203));
+        borderPen.setWidth(2);
+        painter.setPen(borderPen);
+        painter.drawRect(0, 0, this->width(), this->height());
+    }
 
     float factorX = (float)this->width() / this->layout->getGridWidth();
     float factorY = (float)this->height() / this->layout->getGridHeight();

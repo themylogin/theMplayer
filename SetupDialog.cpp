@@ -11,20 +11,13 @@
 #include <QSize>
 
 #include "main.h"
+#include "Utils.h"
 
 SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
     : QDialog(parent, f)
 {
     // Determine biggest screen dimensions
-    this->screenWidth = 0;
-    for (int screen = 0; screen < QApplication::desktop()->screenCount(); screen++)
-    {
-        if (QApplication::desktop()->screenGeometry(screen).width() > screenWidth)
-        {
-            this->screenWidth = QApplication::desktop()->screenGeometry(screen).width();
-            this->screenHeight = QApplication::desktop()->screenGeometry(screen).height();
-        }
-    }
+    Utils::getWidestScreenDimensions(this->screenWidth, this->screenHeight);
 
     // Read settings
     QSettings settings;

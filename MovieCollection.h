@@ -19,6 +19,9 @@ class MovieCollection : public QWidget
         void paintEvent(QPaintEvent* event);
 
     private:
+        int screenWidth;
+        int screenHeight;
+
         GridLayout* layout;
         GridLayoutScrollerWithCursor* scroller;
 

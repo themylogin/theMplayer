@@ -1,6 +1,22 @@
 #include "Utils.h"
 
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QFontMetrics>
+
+void Utils::getWidestScreenDimensions(int& width, int& height)
+{
+    width = 0;
+    height = 0;
+    for (int screen = 0; screen < QApplication::desktop()->screenCount(); screen++)
+    {
+        if (QApplication::desktop()->screenGeometry(screen).width() > width)
+        {
+            width = QApplication::desktop()->screenGeometry(screen).width();
+            height = QApplication::desktop()->screenGeometry(screen).height();
+        }
+    }
+}
 
 QStringList Utils::wrapText(const QFont& font, const QString& text, int width)
 {
