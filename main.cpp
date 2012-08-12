@@ -1,11 +1,12 @@
+#include "main.h"
+
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QDir>
 #include <QSettings>
 #include <QStringList>
 
-#include "DrawingDirection.h"
-#include "main.h"
+#include "MovieCollection.h"
 #include "SetupDialog.h"
 
 bool applicationIsSetUpProperly()
@@ -32,24 +33,14 @@ bool setupModeArgumentPassed()
 
 void executeSetup()
 {
-    SetupDialog *setupDialog = new SetupDialog;
+    SetupDialog* setupDialog = new SetupDialog;
     setupDialog->show();
 }
 
 void executeMovieList()
 {
-    QSettings settings;
-
-    /*
-    MovieGrid *movieGrid = new
-              MovieGrid(1920, 1080,
-                        settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt(),
-                        settings.value("movieFieldHMargin").toInt(), settings.value("movieFieldHPadding").toInt(),
-                        settings.value("movieFieldVMargin").toInt(), settings.value("movieFieldVPadding").toInt(),
-                        settings.value("directory").toString(),
-                        settings.value("scroll").toString().startsWith('H') ? Horizontal : Vertical);
-    movieGrid->showFullScreen();
-    */
+    MovieCollection* mc = new MovieCollection("");
+    mc->showFullScreen();
 }
 
 int main(int argc, char **argv)
@@ -62,7 +53,9 @@ int main(int argc, char **argv)
     if (!applicationIsSetUpProperly() || setupModeArgumentPassed())
     {
         executeSetup();
-    } else {
+    }
+    else
+    {
         executeMovieList();
     }
 

@@ -4,7 +4,9 @@ SOURCES += main.cpp \
     GridLayout.cpp \
     SetupDialogPreview.cpp \
     GridLayoutScroller.cpp \
-    GridLayoutScrollerWithCursor.cpp
+    GridLayoutScrollerWithCursor.cpp \
+    Movie.cpp \
+    MovieCollection.cpp
 HEADERS += SetupDialog.h \
     main.h \
     Utils.h \
@@ -13,7 +15,9 @@ HEADERS += SetupDialog.h \
     GridLayoutDrawingDirection.h \
     GridLayoutScrollingDirection.h \
     GridLayoutScroller.h \
-    GridLayoutScrollerWithCursor.h
+    GridLayoutScrollerWithCursor.h \
+    Movie.h \
+    MovieCollection.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
