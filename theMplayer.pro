@@ -4,7 +4,7 @@ SOURCES += main.cpp \
     Utils.cpp \
     ScrollableGridWithCursor.cpp \
     GridLayout.cpp \
-    TestMovieWidget.cpp
+    SetupDialogPreview.cpp
 HEADERS += SetupDialog.h \
     main.h \
     ScrollableGrid.h \
@@ -13,7 +13,7 @@ HEADERS += SetupDialog.h \
     Utils.h \
     ScrollableGridWithCursor.h \
     GridLayout.h \
-    TestMovieWidget.h
+    SetupDialogPreview.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \

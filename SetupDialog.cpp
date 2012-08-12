@@ -141,7 +141,7 @@ SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
                                                      this->movieHPaddingSpinBox->value(), this->movieVPaddingSpinBox->value(),
                                                      this->movieWidthSpinBox->value(), this->movieHeightSpinBox->value(),
                                                      this->movieHMarginSpinBox->value(), this->movieVMarginSpinBox->value());
-    this->testMovieWidget = new TestMovieWidget(this->testMovieWidgetGridLayout, this);
+    this->testMovieWidget = new SetupDialogPreview(this->testMovieWidgetGridLayout, this);
 
     // Create buttonBox
     this->okButton = new QPushButton(tr("OK"));

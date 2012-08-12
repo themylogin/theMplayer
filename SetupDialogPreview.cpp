@@ -1,15 +1,15 @@
-#include "TestMovieWidget.h"
+#include "SetupDialogPreview.h"
 
 #include <QPainter>
 #include <QSize>
 
-TestMovieWidget::TestMovieWidget(GridLayout* gridLayout, QWidget *parent)
+SetupDialogPreview::SetupDialogPreview(GridLayout* gridLayout, QWidget *parent)
     : QWidget(parent)
 {
     this->gridLayout = gridLayout;
 }
 
-void TestMovieWidget::paintEvent(QPaintEvent *pe)
+void SetupDialogPreview::paintEvent(QPaintEvent *pe)
 {
     QPainter painter(this);
     painter.fillRect(0, 0, this->width(), this->height(), QColor(0, 0, 0));

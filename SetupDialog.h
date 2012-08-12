@@ -12,7 +12,7 @@
 #include <QSpinBox>
 
 #include "GridLayout.h"
-#include "TestMovieWidget.h"
+#include "SetupDialogPreview.h"
 
 class SetupDialog : public QDialog
 {
@@ -55,7 +55,7 @@ class SetupDialog : public QDialog
         QGroupBox* miscGroupBox;
 
         GridLayout* testMovieWidgetGridLayout;
-        TestMovieWidget* testMovieWidget;
+        SetupDialogPreview* testMovieWidget;
 
         QDialogButtonBox* buttonBox;
         QPushButton* okButton;
