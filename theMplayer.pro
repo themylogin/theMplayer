@@ -1,19 +1,19 @@
 SOURCES += main.cpp \
     SetupDialog.cpp \
-    ScrollableGrid.cpp \
     Utils.cpp \
-    ScrollableGridWithCursor.cpp \
     GridLayout.cpp \
-    SetupDialogPreview.cpp
+    SetupDialogPreview.cpp \
+    GridLayoutScroller.cpp \
+    GridLayoutScrollerWithCursor.cpp
 HEADERS += SetupDialog.h \
     main.h \
-    ScrollableGrid.h \
-    DrawingDirection.h \
-    ScrollingDirection.h \
     Utils.h \
-    ScrollableGridWithCursor.h \
     GridLayout.h \
-    SetupDialogPreview.h
+    SetupDialogPreview.h \
+    GridLayoutDrawingDirection.h \
+    GridLayoutScrollingDirection.h \
+    GridLayoutScroller.h \
+    GridLayoutScrollerWithCursor.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
