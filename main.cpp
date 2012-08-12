@@ -6,7 +6,6 @@
 
 #include "DrawingDirection.h"
 #include "main.h"
-#include "MovieGrid.h"
 #include "SetupDialog.h"
 
 bool applicationIsSetUpProperly()
@@ -41,6 +40,7 @@ void executeMovieList()
 {
     QSettings settings;
 
+    /*
     MovieGrid *movieGrid = new
               MovieGrid(1920, 1080,
                         settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt(),
@@ -49,6 +49,7 @@ void executeMovieList()
                         settings.value("directory").toString(),
                         settings.value("scroll").toString().startsWith('H') ? Horizontal : Vertical);
     movieGrid->showFullScreen();
+    */
 }
 
 int main(int argc, char **argv)
