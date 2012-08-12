@@ -7,6 +7,7 @@
 #include <QStringList>
 
 #include "MovieCollection.h"
+#include "MovieCollectionModel.h"
 #include "SetupDialog.h"
 
 bool applicationIsSetUpProperly()
@@ -39,7 +40,11 @@ void executeSetup()
 
 void executeMovieList()
 {
-    MovieCollection* mc = new MovieCollection("");
+    QSettings settings;
+
+    MovieCollectionModel* mcm = new MovieCollectionModel(settings.value("directory").toString());
+    QPersistentModelIndex mcmi = mcm->getRootIndex();
+    MovieCollection* mc = new MovieCollection(mcm, mcmi);
     mc->showFullScreen();
 }
 

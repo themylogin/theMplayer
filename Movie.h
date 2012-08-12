@@ -13,6 +13,9 @@ class Movie : public QWidget
 
     protected:
         void paintEvent(QPaintEvent* event);
+
+    private:
+        QString path;
 };
 
 #endif // MOVIE_H

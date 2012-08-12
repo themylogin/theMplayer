@@ -1,11 +1,13 @@
 #include "Movie.h"
 
+#include <QDebug>
 #include <QPainter>
 #include <QPen>
 
 Movie::Movie(QString path, QWidget* parent) :
     QWidget(parent)
 {
+    this->path = path;
 }
 
 void Movie::paintEvent(QPaintEvent* event)
@@ -20,4 +22,6 @@ void Movie::paintEvent(QPaintEvent* event)
     borderPen.setWidth(2);
     painter.setPen(borderPen);
     painter.drawRect(0, 0, this->width(), this->height());
+
+    painter.drawText(0, 20, this->path);
 }

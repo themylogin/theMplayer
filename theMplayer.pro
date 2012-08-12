@@ -6,7 +6,8 @@ SOURCES += main.cpp \
     GridLayoutScroller.cpp \
     GridLayoutScrollerWithCursor.cpp \
     Movie.cpp \
-    MovieCollection.cpp
+    MovieCollection.cpp \
+    MovieCollectionModel.cpp
 HEADERS += SetupDialog.h \
     main.h \
     Utils.h \
@@ -17,8 +18,10 @@ HEADERS += SetupDialog.h \
     GridLayoutScroller.h \
     GridLayoutScrollerWithCursor.h \
     Movie.h \
-    MovieCollection.h
+    MovieCollection.h \
+    MovieCollectionModel.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
     -lswscale
+QMAKE_CXXFLAGS += -std=c++0x
