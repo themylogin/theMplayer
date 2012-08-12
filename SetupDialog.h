@@ -18,52 +18,52 @@ class SetupDialog : public QDialog
     Q_OBJECT
 
     public:
-        SetupDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
+        SetupDialog(QWidget* parent = 0, Qt::WindowFlags f = 0);
 
     private:
         int screenWidth;
         int screenHeight;
 
-        QLabel *directoryLabel;
-        QLineEdit *directoryEdit;
-        QPushButton *directorySelectButton;
-        QGridLayout *directoryLayout;
-        QGroupBox *directoryGroupBox;
+        QLabel* directoryLabel;
+        QLineEdit* directoryEdit;
+        QPushButton* directorySelectButton;
+        QGridLayout* directoryLayout;
+        QGroupBox* directoryGroupBox;
 
-        QLabel *movieWidthLabel;
-        QLabel *movieHeightLabel;
-        QSpinBox *movieWidthSpinBox;
-        QSpinBox *movieHeightSpinBox;
-        QGridLayout *movieLayout;
-        QGroupBox *movieGroupBox;
+        QLabel* movieWidthLabel;
+        QLabel* movieHeightLabel;
+        QSpinBox* movieWidthSpinBox;
+        QSpinBox* movieHeightSpinBox;
+        QGridLayout* movieLayout;
+        QGroupBox* movieGroupBox;
 
-        QLabel *movieFieldHLabel;
-        QLabel *movieFieldVLabel;
-        QLabel *movieFieldMarginsLabel;
-        QLabel *movieFieldPaddingsLabel;
-        QSpinBox *movieFieldHMarginSpinBox;
-        QSpinBox *movieFieldVMarginSpinBox;
-        QSpinBox *movieFieldHPaddingSpinBox;
-        QSpinBox *movieFieldVPaddingSpinBox;
-        QGridLayout *movieFieldLayout;
-        QGroupBox *movieFieldGroupBox;
+        QLabel* movieFieldHLabel;
+        QLabel* movieFieldVLabel;
+        QLabel* movieFieldMarginsLabel;
+        QLabel* movieFieldPaddingsLabel;
+        QSpinBox* movieFieldHMarginSpinBox;
+        QSpinBox* movieFieldVMarginSpinBox;
+        QSpinBox* movieFieldHPaddingSpinBox;
+        QSpinBox* movieFieldVPaddingSpinBox;
+        QGridLayout* movieFieldLayout;
+        QGroupBox* movieFieldGroupBox;
 
-        QLabel *miscAudioTrackLangLabel;
-        QComboBox *miscAudioTrackLangComboBox;
-        QLabel *miscSubtitleLangLabel;
-        QComboBox *miscSubtitleLangComboBox;
-        QLabel *miscScrollLabel;
-        QComboBox *miscScrollComboBox;
-        QGridLayout *miscLayout;
-        QGroupBox *miscGroupBox;
+        QLabel* miscAudioTrackLangLabel;
+        QComboBox* miscAudioTrackLangComboBox;
+        QLabel* miscSubtitleLangLabel;
+        QComboBox* miscSubtitleLangComboBox;
+        QLabel* miscScrollLabel;
+        QComboBox* miscScrollComboBox;
+        QGridLayout* miscLayout;
+        QGroupBox* miscGroupBox;
 
-        TestMovieWidget *movieTestGrid;
+        TestMovieWidget* movieTestGrid;
 
-        QDialogButtonBox *buttonBox;
-        QPushButton *okButton;
-        QPushButton *okAndRunButton;
+        QDialogButtonBox* buttonBox;
+        QPushButton* okButton;
+        QPushButton* okAndRunButton;
 
-        QGridLayout *dialogLayout;
+        QGridLayout* dialogLayout;
 
         int movieHeightValue(int movieWidthValue);
         void updateTestGridValues();
