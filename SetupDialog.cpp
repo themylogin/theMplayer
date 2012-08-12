@@ -1,251 +1,219 @@
+#include "SetupDialog.h"
+
 #include <QApplication>
-#include <QComboBox>
 #include <QDesktopWidget>
-#include <QDialogButtonBox>
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSpinBox>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
 #include <QPalette>
-#include <QPushButton>
 #include <QSettings>
 #include <QSize>
 
 #include "main.h"
-#include "SetupDialog.h"
-#include "TestMovieGrid.h"
 
-#include <QDebug>
-
-SetupDialog::SetupDialog(QWidget *parent, Qt::WindowFlags f)
-        : QDialog(parent, f)
+SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
+    : QDialog(parent, f)
 {
-    screenWidth = 0;
+    // Determine biggest screen dimensions
+    this->screenWidth = 0;
     for (int screen = 0; screen < QApplication::desktop()->screenCount(); screen++)
     {
         if (QApplication::desktop()->screenGeometry(screen).width() > screenWidth)
         {
-            screenWidth = QApplication::desktop()->screenGeometry(screen).width();
-            screenHeight = QApplication::desktop()->screenGeometry(screen).height();
+            this->screenWidth = QApplication::desktop()->screenGeometry(screen).width();
+            this->screenHeight = QApplication::desktop()->screenGeometry(screen).height();
         }
     }
 
+    // Read settings
     QSettings settings;
-    setWindowTitle(tr("theMplayer setup"));
-
-    movieTestGrid = NULL; // bug #1
 
     // Create directoryGroupBox
-    directoryLabel = new QLabel(tr("Directory:"));
-    directoryEdit = new QLineEdit(settings.value("directory", QVariant(QDir::home().absolutePath())).toString());
-    connect(directoryEdit, SIGNAL(textChanged(QString)), this, SLOT(directorySelected(QString)));
-    directorySelectButton = new QPushButton(tr("Select"));
-    connect(directorySelectButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
+    this->directoryLabel = new QLabel(tr("Directory:"));
+    this->directoryEdit = new QLineEdit(settings.value("directory", QVariant(QDir::home().absolutePath())).toString());
+    connect(this->directoryEdit, SIGNAL(textChanged(QString)), this, SLOT(directorySelected(QString)));
+    this->directorySelectButton = new QPushButton(tr("Select"));
+    connect(this->directorySelectButton, SIGNAL(clicked()), this, SLOT(selectDirectory()));
 
-    directoryLayout = new QGridLayout();
-    directoryLayout->addWidget(directoryLabel, 0, 0);
-    directoryLayout->addWidget(directoryEdit, 0, 1);
-    directoryLayout->addWidget(directorySelectButton, 0, 2);
+    this->directoryLayout = new QGridLayout();
+    this->directoryLayout->addWidget(this->directoryLabel, 0, 0);
+    this->directoryLayout->addWidget(this->directoryEdit, 0, 1);
+    this->directoryLayout->addWidget(this->directorySelectButton, 0, 2);
 
-    directoryGroupBox = new QGroupBox(tr("Movies Directory"));
-    directoryGroupBox->setLayout(directoryLayout);
+    this->directoryGroupBox = new QGroupBox(tr("Movies Directory"));
+    this->directoryGroupBox->setLayout(this->directoryLayout);
 
     // Create movieGroupBox    
-    movieWidthLabel  = new QLabel(tr("Width:"));
-    movieHeightLabel = new QLabel(tr("Height:"));
+    this->movieWidthLabel  = new QLabel(tr("Width:"));
+    this->movieHeightLabel = new QLabel(tr("Height:"));
 
-    movieWidthSpinBox = new QSpinBox();
-    movieWidthSpinBox->setSingleStep(5);
-    movieWidthSpinBox->setMinimum(60);
-    movieWidthSpinBox->setMaximum(QApplication::desktop()->geometry().width());
-    movieWidthSpinBox->setValue(settings.value("movieWidth", QVariant(400)).toInt());
-    movieWidthSpinBox->setSuffix(tr(" px"));
-    connect(movieWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieWidthChanged(int)));
+    this->movieWidthSpinBox = new QSpinBox();
+    this->movieWidthSpinBox->setSingleStep(5);
+    this->movieWidthSpinBox->setMinimum(60);
+    this->movieWidthSpinBox->setMaximum(this->screenWidth);
+    this->movieWidthSpinBox->setValue(settings.value("movieWidth", QVariant(400)).toInt());
+    this->movieWidthSpinBox->setSuffix(tr(" px"));
+    connect(this->movieWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieWidthChanged(int)));
 
     movieHeightSpinBox = new QSpinBox();
-    movieHeightSpinBox->setSingleStep(5);
-    movieHeightSpinBox->setReadOnly(true);
-    movieHeightSpinBox->setMinimum(movieHeightValue(60));
-    movieHeightSpinBox->setMaximum(QApplication::desktop()->geometry().height());
-    movieHeightSpinBox->setValue(movieHeightValue(movieWidthSpinBox->value()));
-    movieHeightSpinBox->setSuffix(tr(" px"));
+    this->movieHeightSpinBox->setSingleStep(5);
+    this->movieHeightSpinBox->setReadOnly(true);
+    this->movieHeightSpinBox->setValue(this->movieHeightFor(this->movieWidthSpinBox->value()));
+    this->movieHeightSpinBox->setSuffix(tr(" px"));
 
-    movieLayout = new QGridLayout();
-    movieLayout->addWidget(new QLabel, 0, 0);
-    movieLayout->addWidget(movieWidthLabel, 1, 0);
-    movieLayout->addWidget(movieHeightLabel, 2, 0);
-    movieLayout->addWidget(movieWidthSpinBox, 1, 1);
-    movieLayout->addWidget(movieHeightSpinBox, 2, 1);
+    this->movieLayout = new QGridLayout();
+    this->movieLayout->addWidget(new QLabel, 0, 0);
+    this->movieLayout->addWidget(this->movieWidthLabel, 1, 0);
+    this->movieLayout->addWidget(this->movieHeightLabel, 2, 0);
+    this->movieLayout->addWidget(this->movieWidthSpinBox, 1, 1);
+    this->movieLayout->addWidget(this->movieHeightSpinBox, 2, 1);
 
-    movieGroupBox = new QGroupBox(tr("Movie"));
-    movieGroupBox->setLayout(movieLayout);
+    this->movieGroupBox = new QGroupBox(tr("Movie"));
+    this->movieGroupBox->setLayout(this->movieLayout);
 
     // Create movieFieldGroupBox
-    movieFieldHLabel = new QLabel(tr("Horizontal"));
-    movieFieldVLabel = new QLabel(tr("Vertical"));
-    movieFieldMarginsLabel = new QLabel(tr("Margins:"));
-    movieFieldPaddingsLabel = new QLabel(tr("Paddings:"));
+    this->movieHPaddingMarginLabel = new QLabel(tr("Horizontal"));
+    this->movieVPaddingMarginLabel = new QLabel(tr("Vertical"));
+    this->moviePaddingLabel = new QLabel(tr("Grid padding:"));
+    this->movieMarginLabel = new QLabel(tr("Movies margin:"));
 
-    movieFieldHMarginSpinBox = new QSpinBox();
-    movieFieldHMarginSpinBox->setMinimum(0);
-    movieFieldHMarginSpinBox->setMaximum(QApplication::desktop()->geometry().width());
-    movieFieldHMarginSpinBox->setValue(settings.value("movieFieldHMargin", QVariant(10)).toInt());
-    movieFieldHMarginSpinBox->setSuffix(tr(" px"));
-    connect(movieFieldHMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieFieldHMarginChanged(int)));
+    this->movieHPaddingSpinBox = new QSpinBox();
+    this->movieHPaddingSpinBox->setMinimum(0);
+    this->movieHPaddingSpinBox->setMaximum(this->screenWidth);
+    this->movieHPaddingSpinBox->setValue(settings.value("movieHPadding", QVariant(10)).toInt());
+    this->movieHPaddingSpinBox->setSuffix(tr(" px"));
+    connect(this->movieHPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieHPaddingChanged(int)));
 
-    movieFieldVMarginSpinBox = new QSpinBox();
-    movieFieldVMarginSpinBox->setMinimum(0);
-    movieFieldVMarginSpinBox->setMaximum(QApplication::desktop()->geometry().height());
-    movieFieldVMarginSpinBox->setValue(settings.value("movieFieldVMargin", QVariant(10)).toInt());
-    movieFieldVMarginSpinBox->setSuffix(tr(" px"));
-    connect(movieFieldVMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieFieldVMarginChanged(int)));
+    this->movieVPaddingSpinBox = new QSpinBox();
+    this->movieVPaddingSpinBox->setMinimum(0);
+    this->movieVPaddingSpinBox->setMaximum(this->screenHeight);
+    this->movieVPaddingSpinBox->setValue(settings.value("movieVPadding", QVariant(10)).toInt());
+    this->movieVPaddingSpinBox->setSuffix(tr(" px"));
+    connect(this->movieVPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieVPaddingChanged(int)));
 
-    movieFieldHPaddingSpinBox = new QSpinBox();
-    movieFieldHPaddingSpinBox->setMinimum(0);
-    movieFieldHPaddingSpinBox->setMaximum(QApplication::desktop()->geometry().width());
-    movieFieldHPaddingSpinBox->setValue(settings.value("movieFieldHPadding", QVariant(10)).toInt());
-    movieFieldHPaddingSpinBox->setSuffix(tr(" px"));
-    connect(movieFieldHPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieFieldHPaddingChanged(int)));
+    this->movieHMarginSpinBox = new QSpinBox();
+    this->movieHMarginSpinBox->setMinimum(0);
+    this->movieHMarginSpinBox->setMaximum(this->screenWidth);
+    this->movieHMarginSpinBox->setValue(settings.value("movieHMargin", QVariant(10)).toInt());
+    this->movieHMarginSpinBox->setSuffix(tr(" px"));
+    connect(this->movieHMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieHMarginChanged(int)));
 
-    movieFieldVPaddingSpinBox = new QSpinBox();
-    movieFieldVPaddingSpinBox->setMinimum(0);
-    movieFieldVPaddingSpinBox->setMaximum(QApplication::desktop()->geometry().height());
-    movieFieldVPaddingSpinBox->setValue(settings.value("movieFieldVPadding", QVariant(10)).toInt());
-    movieFieldVPaddingSpinBox->setSuffix(tr(" px"));
-    connect(movieFieldVPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieFieldVPaddingChanged(int)));
+    this->movieVMarginSpinBox = new QSpinBox();
+    this->movieVMarginSpinBox->setMinimum(0);
+    this->movieVMarginSpinBox->setMaximum(this->screenHeight);
+    this->movieVMarginSpinBox->setValue(settings.value("movieVMargin", QVariant(10)).toInt());
+    this->movieVMarginSpinBox->setSuffix(tr(" px"));
+    connect(this->movieVMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieVMarginChanged(int)));
 
-    movieFieldLayout = new QGridLayout();
-    movieFieldLayout->addWidget(movieFieldMarginsLabel, 1, 0);
-    movieFieldLayout->addWidget(movieFieldPaddingsLabel, 2, 0);
-    movieFieldLayout->addWidget(movieFieldHLabel, 0, 1);
-    movieFieldLayout->addWidget(movieFieldHMarginSpinBox, 1, 1);
-    movieFieldLayout->addWidget(movieFieldHPaddingSpinBox, 2, 1);
-    movieFieldLayout->addWidget(movieFieldVLabel, 0, 2);
-    movieFieldLayout->addWidget(movieFieldVMarginSpinBox, 1, 2);
-    movieFieldLayout->addWidget(movieFieldVPaddingSpinBox, 2, 2);
+    this->moviePaddingMarginLayout = new QGridLayout();
+    this->moviePaddingMarginLayout->addWidget(this->moviePaddingLabel, 1, 0);
+    this->moviePaddingMarginLayout->addWidget(this->movieMarginLabel, 2, 0);
+    this->moviePaddingMarginLayout->addWidget(this->movieHPaddingMarginLabel, 0, 1);
+    this->moviePaddingMarginLayout->addWidget(this->movieHPaddingSpinBox, 1, 1);
+    this->moviePaddingMarginLayout->addWidget(this->movieHMarginSpinBox, 2, 1);
+    this->moviePaddingMarginLayout->addWidget(this->movieVPaddingMarginLabel, 0, 2);
+    this->moviePaddingMarginLayout->addWidget(this->movieVPaddingSpinBox, 1, 2);
+    this->moviePaddingMarginLayout->addWidget(this->movieVMarginSpinBox, 2, 2);
 
-    movieFieldGroupBox = new QGroupBox(tr("Movies Field"));
-    movieFieldGroupBox->setLayout(movieFieldLayout);
+    this->moviePaddingMarginGroupBox = new QGroupBox(tr("Padding & Margin"));
+    this->moviePaddingMarginGroupBox->setLayout(this->moviePaddingMarginLayout);
 
     // Create movieMiscGroupBox
-    miscAudioTrackLangLabel = new QLabel(tr("Audio track:"));
-    miscSubtitleLangLabel = new QLabel(tr("Subtitle language:"));
-    miscScrollLabel = new QLabel(tr("Scroll:"));
+    this->miscScrollLabel = new QLabel(tr("Scroll:"));
 
-    miscAudioTrackLangComboBox = new QComboBox();
-    miscAudioTrackLangComboBox->addItem(QString("English"), QVariant("eng"));
-    miscAudioTrackLangComboBox->addItem(QString("Japanese"), QVariant("jap"));
-    miscAudioTrackLangComboBox->addItem(QString("Russian"), QVariant("rus"));
-    miscAudioTrackLangComboBox->setCurrentIndex(miscAudioTrackLangComboBox->findData(settings.value("audioLang", QVariant("jap"))));
+    this->miscScrollComboBox = new QComboBox();
+    this->miscScrollComboBox->addItem(QString("Vertical"), QVariant("V"));
+    this->miscScrollComboBox->addItem(QString("Horizontal"), QVariant("H"));
+    this->miscScrollComboBox->setCurrentIndex(this->miscScrollComboBox->findData(settings.value("scroll", QVariant("V"))));
 
-    miscSubtitleLangComboBox = new QComboBox();
-    miscSubtitleLangComboBox->addItem(QString("English"), QVariant("eng"));
-    miscSubtitleLangComboBox->addItem(QString("Japanese"), QVariant("jap"));
-    miscSubtitleLangComboBox->addItem(QString("Russian"), QVariant("rus"));
-    miscSubtitleLangComboBox->setCurrentIndex(miscSubtitleLangComboBox->findData(settings.value("subLang", QVariant("rus"))));
+    this->miscLayout = new QGridLayout();
+    this->miscLayout->addWidget(this->miscScrollLabel, 0, 4);
+    this->miscLayout->addWidget(this->miscScrollComboBox, 0, 5);
 
-    miscScrollComboBox = new QComboBox();
-    miscScrollComboBox->addItem(QString("Vertical"), QVariant("V"));
-    miscScrollComboBox->addItem(QString("Horizontal"), QVariant("H"));
-    miscScrollComboBox->setCurrentIndex(miscScrollComboBox->findData(settings.value("scroll", QVariant("V"))));
+    this->miscGroupBox = new QGroupBox(tr("Misc"));
+    this->miscGroupBox->setLayout(this->miscLayout);
 
-    miscLayout = new QGridLayout();
-    miscLayout->addWidget(miscAudioTrackLangLabel, 0, 0);
-    miscLayout->addWidget(miscAudioTrackLangComboBox, 0, 1);
-    miscLayout->addWidget(miscSubtitleLangLabel, 0, 2);
-    miscLayout->addWidget(miscSubtitleLangComboBox, 0, 3);
-    miscLayout->addWidget(miscScrollLabel, 0, 4);
-    miscLayout->addWidget(miscScrollComboBox, 0, 5);
-
-    miscGroupBox = new QGroupBox(tr("Misc"));
-    miscGroupBox->setLayout(miscLayout);
-
-    // Create movieTestGrid
-    movieTestGrid = new TestMovieGrid(screenWidth / 2,
-                                      screenHeight / 2,
-
-                                      movieWidthSpinBox->value() / 2,
-                                      movieHeightSpinBox->value() / 2,
-
-                                      movieFieldHMarginSpinBox->value() / 2,
-                                      movieFieldHPaddingSpinBox->value() / 2,
-
-                                      movieFieldVMarginSpinBox->value() / 2,
-                                      movieFieldVPaddingSpinBox->value() / 2);
+    // Create testMovieWidget
+    this->testMovieWidgetGridLayout = new GridLayout(this->screenWidth, this->screenHeight,
+                                                     this->movieHPaddingSpinBox->value(), this->movieVPaddingSpinBox->value(),
+                                                     this->movieWidthSpinBox->value(), this->movieHeightSpinBox->value(),
+                                                     this->movieHMarginSpinBox->value(), this->movieVMarginSpinBox->value());
+    this->testMovieWidget = new TestMovieWidget(this->testMovieWidgetGridLayout, this);
 
     // Create buttonBox
-    okButton = new QPushButton(tr("OK"));
-    connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+    this->okButton = new QPushButton(tr("OK"));
+    connect(this->okButton, SIGNAL(clicked()), this, SLOT(ok()));
 
-    okAndRunButton = new QPushButton(tr("OK and Run"));
-    connect(okAndRunButton, SIGNAL(clicked()), this, SLOT(okAndRun()));
+    this->okAndRunButton = new QPushButton(tr("OK and Run"));
+    connect(this->okAndRunButton, SIGNAL(clicked()), this, SLOT(okAndRun()));
 
-    buttonBox = new QDialogButtonBox();
-    buttonBox->addButton(okButton, QDialogButtonBox::ActionRole);
-    buttonBox->addButton(okAndRunButton, QDialogButtonBox::ActionRole);
+    this->buttonBox = new QDialogButtonBox();
+    this->buttonBox->addButton(this->okButton, QDialogButtonBox::ActionRole);
+    this->buttonBox->addButton(this->okAndRunButton, QDialogButtonBox::ActionRole);
 
     // Create main dialog layout
-    dialogLayout = new QGridLayout();
-    dialogLayout->addWidget(directoryGroupBox, 0, 0, 1, 2);
-    dialogLayout->addWidget(movieGroupBox, 1, 0);
-    dialogLayout->addWidget(movieFieldGroupBox, 1, 1);
-    dialogLayout->addWidget(miscGroupBox, 2, 0, 1, 2);
-    dialogLayout->addWidget(movieTestGrid, 3, 0, 1, 2);
-    dialogLayout->addWidget(buttonBox, 4, 0, 1, 2);
-    setLayout(dialogLayout);
+    this->dialogLayout = new QGridLayout();
+    this->dialogLayout->addWidget(this->directoryGroupBox, 0, 0, 1, 2);
+    this->dialogLayout->addWidget(this->movieGroupBox, 1, 0);
+    this->dialogLayout->addWidget(this->moviePaddingMarginGroupBox, 1, 1);
+    this->dialogLayout->addWidget(this->miscGroupBox, 2, 0, 1, 2);
+    this->dialogLayout->addWidget(this->testMovieWidget, 3, 0, 1, 2);
+    this->dialogLayout->addWidget(this->buttonBox, 4, 0, 1, 2);
+    this->setLayout(dialogLayout);
 
-    resize(screenWidth / 2,
-           screenHeight / 2);
-
+    // Cosmetics
+    setWindowTitle(tr("theMplayer setup"));
+    this->testMovieWidget->resize(this->screenWidth / 2, this->screenHeight / 2);
 }
 
-int SetupDialog::movieHeightValue(int movieWidthValue)
+int SetupDialog::movieHeightFor(int movieWidthValue)
 {
-    return (int) ((float)movieWidthValue / screenWidth * screenHeight + 0.5);
+    return (int) ((float)movieWidthValue / this->screenWidth * this->screenHeight + 0.5);
 }
 
 void SetupDialog::movieWidthChanged(int newValue)
 {
-    movieHeightSpinBox->setValue(movieHeightValue(newValue));
-    updateTestGridValues();
+    this->movieHeightSpinBox->setValue(this->movieHeightFor(newValue));
+    this->updateTestGridValues();
 }
 
-void SetupDialog::movieFieldHMarginChanged(int newValue)
+void SetupDialog::movieHPaddingChanged(int newValue)
 {
-    updateTestGridValues();
+    (void) newValue;
+    this->updateTestGridValues();
 }
 
-void SetupDialog::movieFieldVMarginChanged(int newValue)
+void SetupDialog::movieVPaddingChanged(int newValue)
 {
-    updateTestGridValues();
+    (void) newValue;
+    this->updateTestGridValues();
 }
 
-void SetupDialog::movieFieldHPaddingChanged(int newValue)
+void SetupDialog::movieHMarginChanged(int newValue)
 {
-    updateTestGridValues();
+    (void) newValue;
+    this->updateTestGridValues();
 }
 
-void SetupDialog::movieFieldVPaddingChanged(int newValue)
+void SetupDialog::movieVMarginChanged(int newValue)
 {
-    updateTestGridValues();
+    (void) newValue;
+    this->updateTestGridValues();
 }
 
 void SetupDialog::updateTestGridValues()
 {
-    if (movieTestGrid != NULL)
+    if (this->testMovieWidgetGridLayout != NULL)
     {
-        movieTestGrid->setElementWidth(movieWidthSpinBox->value() / 2);
-        movieTestGrid->setElementHeight(movieHeightSpinBox->value() / 2);
-        movieTestGrid->setGridHPadding(movieFieldHMarginSpinBox->value() / 2);
-        movieTestGrid->setGridVPadding(movieFieldVMarginSpinBox->value() / 2);
-        movieTestGrid->setElementHMargin(movieFieldHPaddingSpinBox->value() / 2);
-        movieTestGrid->setElementVMargin(movieFieldVPaddingSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setGridHPadding(this->movieHPaddingSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setGridVPadding(this->movieVPaddingSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setElementWidth(this->movieWidthSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setElementHeight(this->movieHeightSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setElementHMargin(this->movieHMarginSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setElementVMargin(this->movieVMarginSpinBox->value() / 2);
 
-        movieTestGrid->update();
+        this->testMovieWidget->update();
     }
 }
 
@@ -253,40 +221,40 @@ void SetupDialog::saveSettings()
 {
     QSettings settings;
     settings.setValue("setupDone", QVariant(true));
-    settings.setValue("directory", QVariant(directoryEdit->displayText()));
-    settings.setValue("movieWidth", QVariant(movieWidthSpinBox->value()));
-    settings.setValue("movieHeight", QVariant(movieHeightSpinBox->value()));
-    settings.setValue("movieFieldHMargin", QVariant(movieFieldHMarginSpinBox->value()));
-    settings.setValue("movieFieldVMargin", QVariant(movieFieldVMarginSpinBox->value()));
-    settings.setValue("movieFieldHPadding", QVariant(movieFieldHPaddingSpinBox->value()));
-    settings.setValue("movieFieldVPadding", QVariant(movieFieldVPaddingSpinBox->value()));
+    settings.setValue("directory", QVariant(this->directoryEdit->displayText()));
+    settings.setValue("movieWidth", QVariant(this->movieWidthSpinBox->value()));
+    settings.setValue("movieHeight", QVariant(this->movieHeightSpinBox->value()));
+    settings.setValue("movieHPadding", QVariant(this->movieHPaddingSpinBox->value()));
+    settings.setValue("movieVPadding", QVariant(this->movieVPaddingSpinBox->value()));
+    settings.setValue("movieHMargin", QVariant(this->movieHMarginSpinBox->value()));
+    settings.setValue("movieVMargin", QVariant(this->movieVMarginSpinBox->value()));
 
-    settings.setValue("audioLang", QVariant(miscAudioTrackLangComboBox->itemData(miscAudioTrackLangComboBox->currentIndex())));
-    settings.setValue("subLang", QVariant(miscSubtitleLangComboBox->itemData(miscSubtitleLangComboBox->currentIndex())));
-    settings.setValue("scroll", QVariant(miscScrollComboBox->itemData(miscScrollComboBox->currentIndex())));
+    settings.setValue("scroll", QVariant(this->miscScrollComboBox->itemData(this->miscScrollComboBox->currentIndex())));
 }
 
 void SetupDialog::selectDirectory()
 {
     QString directory = QFileDialog::getExistingDirectory(this, tr("Select Directory"),
-                                                          directoryEdit->displayText(),
+                                                          this->directoryEdit->displayText(),
                                                           QFileDialog::ShowDirsOnly);
-    directoryEdit->setText(directory);
+    this->directoryEdit->setText(directory);
 }
 
 void SetupDialog::directorySelected(QString directory)
 {
     QDir dir = QDir(directory);
-    QPalette pal = directoryEdit->palette();
+    QPalette pal = this->directoryEdit->palette();
 
     if (!dir.exists(directory))
     {
         pal.setColor(QPalette::Text, Qt::red);
-    } else {
+    }
+    else
+    {
         pal.setColor(QPalette::Text, Qt::black);
     }
 
-    directoryEdit->setPalette(pal);
+    this->directoryEdit->setPalette(pal);
 }
 
 void SetupDialog::ok()
@@ -301,12 +269,12 @@ void SetupDialog::ok()
         return;
     }
 
-    saveSettings();
-    accept();
+    this->saveSettings();
+    this->accept();
 }
 
 void SetupDialog::okAndRun()
 {
-    ok();
+    this->ok();
     executeMovieList();
 }

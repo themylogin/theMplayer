@@ -1,17 +1,18 @@
 #ifndef SETUPDIALOG_H
 #define SETUPDIALOG_H
 
+#include <QComboBox>
 #include <QDialog>
-class QComboBox;
-class QDialogButtonBox;
-class QGridLayout;
-class QGroupBox;
-class QLabel;
-class QLineEdit;
-class QPushButton;
-class QSpinBox;
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSpinBox>
 
-class TestMovieWidget;
+#include "GridLayout.h"
+#include "TestMovieWidget.h"
 
 class SetupDialog : public QDialog
 {
@@ -37,27 +38,24 @@ class SetupDialog : public QDialog
         QGridLayout* movieLayout;
         QGroupBox* movieGroupBox;
 
-        QLabel* movieFieldHLabel;
-        QLabel* movieFieldVLabel;
-        QLabel* movieFieldMarginsLabel;
-        QLabel* movieFieldPaddingsLabel;
-        QSpinBox* movieFieldHMarginSpinBox;
-        QSpinBox* movieFieldVMarginSpinBox;
-        QSpinBox* movieFieldHPaddingSpinBox;
-        QSpinBox* movieFieldVPaddingSpinBox;
-        QGridLayout* movieFieldLayout;
-        QGroupBox* movieFieldGroupBox;
+        QLabel* movieHPaddingMarginLabel;
+        QLabel* movieVPaddingMarginLabel;
+        QLabel* moviePaddingLabel;
+        QLabel* movieMarginLabel;
+        QSpinBox* movieHPaddingSpinBox;
+        QSpinBox* movieVPaddingSpinBox;
+        QSpinBox* movieHMarginSpinBox;
+        QSpinBox* movieVMarginSpinBox;
+        QGridLayout* moviePaddingMarginLayout;
+        QGroupBox* moviePaddingMarginGroupBox;
 
-        QLabel* miscAudioTrackLangLabel;
-        QComboBox* miscAudioTrackLangComboBox;
-        QLabel* miscSubtitleLangLabel;
-        QComboBox* miscSubtitleLangComboBox;
         QLabel* miscScrollLabel;
         QComboBox* miscScrollComboBox;
         QGridLayout* miscLayout;
         QGroupBox* miscGroupBox;
 
-        TestMovieWidget* movieTestGrid;
+        GridLayout* testMovieWidgetGridLayout;
+        TestMovieWidget* testMovieWidget;
 
         QDialogButtonBox* buttonBox;
         QPushButton* okButton;
@@ -65,7 +63,7 @@ class SetupDialog : public QDialog
 
         QGridLayout* dialogLayout;
 
-        int movieHeightValue(int movieWidthValue);
+        int movieHeightFor(int movieWidthValue);
         void updateTestGridValues();
         void saveSettings();
 
@@ -74,10 +72,10 @@ class SetupDialog : public QDialog
         void directorySelected(QString directory);
 
         void movieWidthChanged(int newValue);
-        void movieFieldHMarginChanged(int newValue);
-        void movieFieldVMarginChanged(int newValue);
-        void movieFieldHPaddingChanged(int newValue);
-        void movieFieldVPaddingChanged(int newValue);
+        void movieHPaddingChanged(int newValue);
+        void movieVPaddingChanged(int newValue);
+        void movieHMarginChanged(int newValue);
+        void movieVMarginChanged(int newValue);
 
         void ok();
         void okAndRun();
