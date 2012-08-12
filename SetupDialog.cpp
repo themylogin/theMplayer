@@ -52,12 +52,14 @@ SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
     this->movieWidthSpinBox->setSingleStep(5);
     this->movieWidthSpinBox->setMinimum(60);
     this->movieWidthSpinBox->setMaximum(this->screenWidth);
-    this->movieWidthSpinBox->setValue(settings.value("movieWidth", QVariant(400)).toInt());
+    this->movieWidthSpinBox->setValue(settings.value("movieWidth", QVariant(620)).toInt());
     this->movieWidthSpinBox->setSuffix(tr(" px"));
     connect(this->movieWidthSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieWidthChanged(int)));
 
     movieHeightSpinBox = new QSpinBox();
     this->movieHeightSpinBox->setSingleStep(5);
+    this->movieHeightSpinBox->setMinimum(this->movieHeightFor(60));
+    this->movieHeightSpinBox->setMaximum(this->movieHeightFor(this->screenWidth));
     this->movieHeightSpinBox->setReadOnly(true);
     this->movieHeightSpinBox->setValue(this->movieHeightFor(this->movieWidthSpinBox->value()));
     this->movieHeightSpinBox->setSuffix(tr(" px"));
@@ -81,28 +83,28 @@ SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
     this->movieHPaddingSpinBox = new QSpinBox();
     this->movieHPaddingSpinBox->setMinimum(0);
     this->movieHPaddingSpinBox->setMaximum(this->screenWidth);
-    this->movieHPaddingSpinBox->setValue(settings.value("movieHPadding", QVariant(10)).toInt());
+    this->movieHPaddingSpinBox->setValue(settings.value("movieHPadding", QVariant(5)).toInt());
     this->movieHPaddingSpinBox->setSuffix(tr(" px"));
     connect(this->movieHPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieHPaddingChanged(int)));
 
     this->movieVPaddingSpinBox = new QSpinBox();
     this->movieVPaddingSpinBox->setMinimum(0);
     this->movieVPaddingSpinBox->setMaximum(this->screenHeight);
-    this->movieVPaddingSpinBox->setValue(settings.value("movieVPadding", QVariant(10)).toInt());
+    this->movieVPaddingSpinBox->setValue(settings.value("movieVPadding", QVariant(5)).toInt());
     this->movieVPaddingSpinBox->setSuffix(tr(" px"));
     connect(this->movieVPaddingSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieVPaddingChanged(int)));
 
     this->movieHMarginSpinBox = new QSpinBox();
     this->movieHMarginSpinBox->setMinimum(0);
     this->movieHMarginSpinBox->setMaximum(this->screenWidth);
-    this->movieHMarginSpinBox->setValue(settings.value("movieHMargin", QVariant(10)).toInt());
+    this->movieHMarginSpinBox->setValue(settings.value("movieHMargin", QVariant(5)).toInt());
     this->movieHMarginSpinBox->setSuffix(tr(" px"));
     connect(this->movieHMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieHMarginChanged(int)));
 
     this->movieVMarginSpinBox = new QSpinBox();
     this->movieVMarginSpinBox->setMinimum(0);
     this->movieVMarginSpinBox->setMaximum(this->screenHeight);
-    this->movieVMarginSpinBox->setValue(settings.value("movieVMargin", QVariant(10)).toInt());
+    this->movieVMarginSpinBox->setValue(settings.value("movieVMargin", QVariant(5)).toInt());
     this->movieVMarginSpinBox->setSuffix(tr(" px"));
     connect(this->movieVMarginSpinBox, SIGNAL(valueChanged(int)), this, SLOT(movieVMarginChanged(int)));
 
@@ -164,7 +166,8 @@ SetupDialog::SetupDialog(QWidget* parent, Qt::WindowFlags f)
 
     // Cosmetics
     setWindowTitle(tr("theMplayer setup"));
-    this->testMovieWidget->resize(this->screenWidth / 2, this->screenHeight / 2);
+    this->testMovieWidget->setMinimumSize(this->screenWidth / 2, this->screenHeight / 2);
+    this->testMovieWidget->setMaximumSize(this->screenWidth / 2, this->screenHeight / 2);
 }
 
 int SetupDialog::movieHeightFor(int movieWidthValue)
@@ -206,12 +209,12 @@ void SetupDialog::updateTestGridValues()
 {
     if (this->testMovieWidgetGridLayout != NULL)
     {
-        this->testMovieWidgetGridLayout->setGridHPadding(this->movieHPaddingSpinBox->value() / 2);
-        this->testMovieWidgetGridLayout->setGridVPadding(this->movieVPaddingSpinBox->value() / 2);
-        this->testMovieWidgetGridLayout->setElementWidth(this->movieWidthSpinBox->value() / 2);
-        this->testMovieWidgetGridLayout->setElementHeight(this->movieHeightSpinBox->value() / 2);
-        this->testMovieWidgetGridLayout->setElementHMargin(this->movieHMarginSpinBox->value() / 2);
-        this->testMovieWidgetGridLayout->setElementVMargin(this->movieVMarginSpinBox->value() / 2);
+        this->testMovieWidgetGridLayout->setGridHPadding(this->movieHPaddingSpinBox->value());
+        this->testMovieWidgetGridLayout->setGridVPadding(this->movieVPaddingSpinBox->value());
+        this->testMovieWidgetGridLayout->setElementWidth(this->movieWidthSpinBox->value());
+        this->testMovieWidgetGridLayout->setElementHeight(this->movieHeightSpinBox->value());
+        this->testMovieWidgetGridLayout->setElementHMargin(this->movieHMarginSpinBox->value());
+        this->testMovieWidgetGridLayout->setElementVMargin(this->movieVMarginSpinBox->value());
 
         this->testMovieWidget->update();
     }
