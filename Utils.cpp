@@ -32,6 +32,16 @@ QStringList Utils::wrapText(const QFont& font, const QString& text, int width)
             {
                 if (i > 1)
                 {
+                    int j = i;
+                    while (j >= 0 && notWrappedTextPart[j] != ' ')
+                    {
+                        j--;
+                    }
+                    if (j > 0)
+                    {
+                        i = j;
+                    }
+
                     lines.append(notWrappedTextPart.left(i - 1));
                     notWrappedTextPart = notWrappedTextPart.mid(i - 1);
                 }
