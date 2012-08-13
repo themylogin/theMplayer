@@ -15,24 +15,30 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
 
     QSettings settings;
     int width = settings.value("movieWidth").toInt();
+    int height = settings.value("movieHeight").toInt();
     int fontSize = 32;
     int lineHeight = 42;
-    int textHPadding = 10;
-    int textVPadding = 10;
+    int textHPadding = 20;
+    int textVPadding = 20;
     QFont font = QFont("Impact", fontSize, 800, false);
     QStringList lines = Utils::wrapText(font, title, width - 2 * textHPadding);
 
-    this->text = QImage(QSize(width, lines.length() * lineHeight + 2 * textVPadding), QImage::Format_ARGB32);
+    this->text = QImage(QSize(width, height), QImage::Format_ARGB32);
     QPainter painter(&this->text);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen pen(QColor(0, 0, 0));
     pen.setWidth(3);
     painter.setPen(pen);
     painter.setBrush(QColor(255, 255, 255));
+    QFontMetrics metrics(font);
     for (int i = 0; i < lines.length(); i++)
     {
+        QRect lineRect = metrics.boundingRect(lines[i]);
+
         QPainterPath path;
-        path.addText(textHPadding, textVPadding + fontSize + i * lineHeight, font, lines.at(i));
+        path.addText((width - lineRect.width()) / 2,
+                     (height - textVPadding - lineHeight * (lines.length() - i - 1)),
+                     font, lines[i]);
         painter.drawPath(path);
     }
 }

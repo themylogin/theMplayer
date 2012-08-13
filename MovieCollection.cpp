@@ -161,7 +161,7 @@ QWidget* MovieCollection::produceMovie(const QModelIndex& index)
 
 QString MovieCollection::movieTitle(QString fileName)
 {
-    QString title = fileName;
+    QString title = fileName.simplified();
     title.replace(QRegExp("\\.[a-zA-Z0-9]*$"), QString("")); // cut extension
     title.replace(QRegExp("\\.|_"), QString(" "));
     return title;
