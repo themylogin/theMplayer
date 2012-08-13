@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     GridLayoutScrollerWithCursor.cpp \
     Movie.cpp \
     MovieCollection.cpp \
-    MovieCollectionModel.cpp
+    MovieCollectionModel.cpp \
+    MovieFile.cpp
 HEADERS += SetupDialog.h \
     main.h \
     Utils.h \
@@ -19,7 +20,8 @@ HEADERS += SetupDialog.h \
     GridLayoutScrollerWithCursor.h \
     Movie.h \
     MovieCollection.h \
-    MovieCollectionModel.h
+    MovieCollectionModel.h \
+    MovieFile.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \

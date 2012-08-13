@@ -18,7 +18,11 @@ class Movie : public QWidget
         QString title;
         QString path;
 
+        int supposedWidth;
+        int supposedHeight;
+
         QImage text;
+        QImage image;
 };
 
 #endif // MOVIE_H
