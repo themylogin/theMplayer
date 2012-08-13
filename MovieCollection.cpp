@@ -49,7 +49,6 @@ void MovieCollection::test2(const QModelIndex &, int, int, const QModelIndex &, 
 void MovieCollection::paintEvent(QPaintEvent* event)
 {
     (void) event;
-    this->model->sort(0);
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -67,7 +66,8 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     float factorY = (float)this->height() / this->layout->getGridHeight();
 
     // Elements
-    QStringList keysToShow;
+    QStringList keysToShow;    
+    this->model->invalidate();
     for (int col = 0; col < this->layout->getCols(); col++)
     {
         for (int row = 0; row < this->layout->getRows(); row++)
@@ -155,6 +155,14 @@ QWidget* MovieCollection::produceMovie(const QModelIndex& index)
     }
     else
     {
-        return new Movie(this->model->fileName(index), this);
+        return new Movie(this->movieTitle(this->model->fileName(index)), this->model->filePath(index), this);
     }
+}
+
+QString MovieCollection::movieTitle(QString fileName)
+{
+    QString title = fileName;
+    title.replace(QRegExp("\\.[a-zA-Z0-9]*$"), QString("")); // cut extension
+    title.replace(QRegExp("\\.|_"), QString(" "));
+    return title;
 }

@@ -34,6 +34,8 @@ class MovieCollection : public QWidget
         QMap<QString, QWidget*> movies;
         QWidget* produceMovie(const QModelIndex& index);
 
+        QString movieTitle(QString fileName);
+
     private slots:
         void test(const QModelIndex&, int, int);
         void test2(const QModelIndex &, int, int, const QModelIndex &, int);

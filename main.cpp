@@ -10,6 +10,8 @@
 #include "MovieCollectionModel.h"
 #include "SetupDialog.h"
 
+#include <QTreeView>
+
 bool applicationIsSetUpProperly()
 {
     QSettings settings;
@@ -44,6 +46,16 @@ void executeMovieList()
 
     MovieCollectionModel* mcm = new MovieCollectionModel(settings.value("directory").toString());
     QPersistentModelIndex mcmi = mcm->getRootIndex();
+
+    /*
+    QTreeView* tv = new QTreeView;
+    tv->setModel(mcm);
+    tv->setRootIndex(mcmi);
+    tv->setSortingEnabled(true);
+    tv->showFullScreen();
+    */
+
+
     MovieCollection* mc = new MovieCollection(mcm, mcmi);
     mc->showFullScreen();
 }

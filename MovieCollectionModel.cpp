@@ -28,13 +28,7 @@ bool MovieCollectionModel::isDir(const QModelIndex& index) const
 
 QString MovieCollectionModel::fileName(const QModelIndex& index) const
 {
-    QModelIndex fsModelIndex = this->mapToSource(index);
-    if (this->fsModel->isDir(fsModelIndex) && this->hasVideoFiles(fsModelIndex) == 1)
-    {
-        return this->fsModel->fileName(this->getFirstVideoFile(fsModelIndex));
-    }
-
-    return this->fsModel->fileName(fsModelIndex);
+    return this->fsModel->fileName(this->mapToSource(index));
 }
 
 QString MovieCollectionModel::filePath(const QModelIndex& index) const
@@ -77,8 +71,9 @@ bool MovieCollectionModel::filterAcceptsRow(int sourceRow, const QModelIndex& so
     return false;
 }
 
-bool MovieCollectionModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+bool MovieCollectionModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
+    qDebug() << "lessThan";
     return QString::localeAwareCompare(this->fsModel->fileName(left), this->fsModel->fileName(right)) < 0;
 }
 
