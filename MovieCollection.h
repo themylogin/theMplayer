@@ -1,6 +1,7 @@
 #ifndef MOVIECOLLECTION_H
 #define MOVIECOLLECTION_H
 
+#include <QKeyEvent>
 #include <QMap>
 #include <QString>
 #include <QWidget>
@@ -18,6 +19,7 @@ class MovieCollection : public QWidget
 
     protected:
         void paintEvent(QPaintEvent* event);
+        void keyPressEvent(QKeyEvent* event);
 
     private:
         int screenWidth;

@@ -16,8 +16,8 @@ class MovieCollectionModel : public QSortFilterProxyModel
         QString filePath(const QModelIndex& index) const;
 
     protected:
-        virtual bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
-        virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+        bool filterAcceptsRow(int sourceRow, const QModelIndex& sourceParent) const;
+        bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
 
     private:
         QFileSystemModel* fsModel;
