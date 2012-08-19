@@ -31,6 +31,9 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
     this->model = model;
     this->modelRootIndex = modelRootIndex;
     connect(this->model, SIGNAL(rowsInserted(const QModelIndex&, int, int)), this, SLOT(moviesInserted(const QModelIndex&, int, int)));
+
+    this->text = Utils::drawOutlinedText(this->movieTitle(this->model->fileName(this->modelRootIndex)),
+                                         settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt());
 }
 
 void MovieCollection::paintEvent(QPaintEvent* event)
@@ -110,6 +113,17 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     for (int i = 0; i < keysToShow.length(); i++)
     {
         this->movies[keysToShow[i]]->show();
+    }
+
+    // text
+    if (!this->isFullScreen())
+    {
+        if (!this->scaledTexts.contains(this->width()))
+        {
+            this->scaledTexts[this->width()] = this->text.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        }
+        QImage text = this->scaledTexts[this->width()];
+        painter.drawImage(0, 0, text);
     }
 }
 

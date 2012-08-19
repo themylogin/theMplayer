@@ -31,6 +31,9 @@ class MovieCollection : public QWidget
         MovieCollectionModel* model;
         QPersistentModelIndex modelRootIndex;
 
+        QImage text;
+        QMap<int, QImage> scaledTexts;
+
         QMap<QString, QWidget*> movies;
         QWidget* produceMovie(const QModelIndex& index);
 
