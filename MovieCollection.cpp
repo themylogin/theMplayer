@@ -75,7 +75,7 @@ void MovieCollection::paintEvent(QPaintEvent* event)
             if (this->scroller->isCurrent(col, row))
             {
                 QPen pen(QColor(255, 0, 0));
-                pen.setWidth(this->layout->getElementHMargin() * factorX);
+                pen.setWidth(this->layout->getElementHMargin() * factorX * 2);
 
                 painter.setPen(pen);
                 painter.drawRect(QRect((this->layout->getX(col)) * factorX,
