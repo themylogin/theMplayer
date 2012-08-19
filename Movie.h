@@ -5,9 +5,9 @@
 #include <QString>
 #include <QWidget>
 
-#include "IMovieCollectionItem.h"
+#include "MovieCollectionItem.h"
 
-class Movie : public IMovieCollectionItem
+class Movie : public MovieCollectionItem
 {
     Q_OBJECT
 

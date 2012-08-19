@@ -11,7 +11,7 @@
 #include "Utils.h"
 
 Movie::Movie(QString title, QString path, QWidget* parent) :
-    IMovieCollectionItem(parent)
+    MovieCollectionItem(parent)
 {
     this->title = title;
     this->path = path;

@@ -40,6 +40,8 @@ class MovieCollection : public MovieCollectionItem
         QMap<QString, MovieCollectionItem*> movies;
         MovieCollectionItem* produceMovie(const QModelIndex& index);
 
+        QWidget* back;
+
         QString movieTitle(QString fileName);
 
     private slots:

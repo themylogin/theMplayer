@@ -12,7 +12,7 @@
 #include <QDebug>
 
 MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentModelIndex& modelRootIndex, QWidget* parent) :
-    IMovieCollectionItem(parent)
+    MovieCollectionItem(parent)
 {
     QSettings settings;
 
@@ -34,6 +34,8 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
 
     this->text = Utils::drawOutlinedText(this->movieTitle(this->model->fileName(this->modelRootIndex)),
                                          settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt());
+
+    this->back = 0;
 }
 
 void MovieCollection::paintEvent(QPaintEvent* event)
@@ -173,6 +175,14 @@ void MovieCollection::keyPressEvent(QKeyEvent* event)
                 }
             }
             break;
+        case Qt::Key_Escape:
+        case Qt::Key_Backspace:
+            if (this->back)
+            {
+                this->setParent(back);
+                back->showFullScreen();
+            }
+            break;
     }
 }
 
@@ -184,11 +194,13 @@ void MovieCollection::activate()
         parent->hide();
     }
 
+    this->back = parent;
     this->setParent(0);
+
     this->showFullScreen();
 }
 
-IMovieCollectionItem* MovieCollection::produceMovie(const QModelIndex& index)
+MovieCollectionItem* MovieCollection::produceMovie(const QModelIndex& index)
 {
     if (this->model->isDir(index))
     {
