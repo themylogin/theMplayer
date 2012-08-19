@@ -52,31 +52,7 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
     }
 
     // text
-    int fontSize = 32;
-    int lineHeight = 42;
-    int textHPadding = 20;
-    int textVPadding = 20;
-    QFont font = QFont("Impact", fontSize, 800, false);
-    QStringList lines = Utils::wrapText(font, title, this->supposedWidth - 2 * textHPadding);
-
-    this->text = QImage(QSize(this->supposedWidth, this->supposedHeight), QImage::Format_ARGB32);
-    QPainter painter(&this->text);
-    painter.setRenderHint(QPainter::Antialiasing);
-    QPen pen(QColor(0, 0, 0));
-    pen.setWidth(3);
-    painter.setPen(pen);
-    painter.setBrush(QColor(255, 255, 255));
-    QFontMetrics metrics(font);
-    for (int i = 0; i < lines.length(); i++)
-    {
-        QRect lineRect = metrics.boundingRect(lines[i]);
-
-        QPainterPath path;
-        path.addText((this->supposedWidth - lineRect.width()) / 2,
-                     (this->supposedHeight - textVPadding - lineHeight * (lines.length() - i - 1)),
-                     font, lines[i]);
-        painter.drawPath(path);
-    }
+    this->text = Utils::drawOutlinedText(title, this->supposedWidth, this->supposedHeight);
 }
 
 void Movie::paintEvent(QPaintEvent* event)

@@ -3,6 +3,8 @@
 #include <QApplication>
 #include <QDesktopWidget>
 #include <QFontMetrics>
+#include <QPainter>
+#include <QPainterPath>
 
 void Utils::getWidestScreenDimensions(int& width, int& height)
 {
@@ -65,4 +67,34 @@ QStringList Utils::wrapText(const QFont& font, const QString& text, int width)
     }
 
     return lines;
+}
+
+QImage Utils::drawOutlinedText(QString text, int width, int height)
+{
+    int fontSize = 32;
+    int lineHeight = 42;
+    int textHPadding = 20;
+    int textVPadding = 20;
+    QFont font = QFont("Impact", fontSize, 800, false);
+    QStringList lines = Utils::wrapText(font, text, width - 2 * textHPadding);
+
+    QImage image = QImage(QSize(width, height), QImage::Format_ARGB32);
+    QPainter painter(&image);
+    painter.setRenderHint(QPainter::Antialiasing);
+    QPen pen(QColor(0, 0, 0));
+    pen.setWidth(3);
+    painter.setPen(pen);
+    painter.setBrush(QColor(255, 255, 255));
+    QFontMetrics metrics(font);
+    for (int i = 0; i < lines.length(); i++)
+    {
+        QRect lineRect = metrics.boundingRect(lines[i]);
+
+        QPainterPath path;
+        path.addText((width - lineRect.width()) / 2,
+                     (height - textVPadding - lineHeight * (lines.length() - i - 1)),
+                     font, lines[i]);
+        painter.drawPath(path);
+    }
+    return image;
 }
