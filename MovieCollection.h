@@ -8,10 +8,10 @@
 
 #include "GridLayout.h"
 #include "GridLayoutScrollerWithCursor.h"
-#include "IMovieCollectionItem.h"
+#include "MovieCollectionItem.h"
 #include "MovieCollectionModel.h"
 
-class MovieCollection : public IMovieCollectionItem
+class MovieCollection : public MovieCollectionItem
 {
     Q_OBJECT
 
@@ -37,8 +37,8 @@ class MovieCollection : public IMovieCollectionItem
         QImage text;
         QMap<int, QImage> scaledTexts;
 
-        QMap<QString, IMovieCollectionItem*> movies;
-        IMovieCollectionItem* produceMovie(const QModelIndex& index);
+        QMap<QString, MovieCollectionItem*> movies;
+        MovieCollectionItem* produceMovie(const QModelIndex& index);
 
         QString movieTitle(QString fileName);
 
