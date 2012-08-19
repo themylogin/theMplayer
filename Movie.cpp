@@ -96,15 +96,20 @@ void Movie::paintEvent(QPaintEvent* event)
     painter.setBrush(QColor(0, 0, 0));
     painter.drawRect(0, 0, this->width(), this->height());
 
-    painter.save();
-    painter.scale((float) this->width() / this->supposedWidth, (float) this->height() / this->supposedHeight);
+    if (!this->scaledImages.contains(this->width()))
     {
-        painter.drawImage(QRect(0,                   (this->supposedHeight - this->image.height()) / 2,
-                                this->image.width(), this->image.height()),
-                          this->image);
-        painter.drawImage(0, 0, this->text);
+        this->scaledImages[this->width()] = this->image.scaledToWidth(this->width(), Qt::SmoothTransformation);
     }
-    painter.restore();
+    QImage image = this->scaledImages[this->width()];
+    if (!this->scaledTexts.contains(this->width()))
+    {
+        this->scaledTexts[this->width()] = this->text.scaledToWidth(this->width(), Qt::SmoothTransformation);
+    }
+    QImage text = this->scaledTexts[this->width()];
+    painter.drawImage(QRect(0,             (this->height() - image.height()) / 2,
+                            image.width(), image.height()),
+                      image);
+    painter.drawImage(0, 0, text);
 
     painter.setPen(borderPen);
     painter.setBrush(QColor(0, 0, 0, 0));

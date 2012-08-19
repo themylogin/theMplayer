@@ -1,6 +1,7 @@
 #ifndef MOVIE_H
 #define MOVIE_H
 
+#include <QMap>
 #include <QString>
 #include <QWidget>
 
@@ -23,6 +24,9 @@ class Movie : public QWidget
 
         QImage text;
         QImage image;
+
+        QMap<int, QImage> scaledTexts;
+        QMap<int, QImage> scaledImages;
 };
 
 #endif // MOVIE_H
