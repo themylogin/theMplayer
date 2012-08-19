@@ -12,7 +12,7 @@
 #include <QDebug>
 
 MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentModelIndex& modelRootIndex, QWidget* parent) :
-    QWidget(parent)
+    IMovieCollectionItem(parent)
 {
     QSettings settings;
 
@@ -147,10 +147,48 @@ void MovieCollection::keyPressEvent(QKeyEvent* event)
             this->scroller->right(this->model->rowCount(this->modelRootIndex));
             update();
             break;
+
+        case Qt::Key_Return:
+            for (int col = 0; col < this->layout->getCols(); col++)
+            {
+                for (int row = 0; row < this->layout->getRows(); row++)
+                {
+                    if (this->scroller->isCurrent(col, row))
+                    {
+                        int i = this->scroller->indexAt(col, row);
+                        if (i == -1 || !this->model->hasIndex(i, 0, this->modelRootIndex))
+                        {
+                            return;
+                        }
+
+                        QModelIndex index = this->model->index(i, 0, this->modelRootIndex);
+                        QString key = this->model->filePath(index);
+                        if (!this->movies.contains(key))
+                        {
+                            return;
+                        }
+
+                        this->movies[key]->activate();
+                    }
+                }
+            }
+            break;
     }
 }
 
-QWidget* MovieCollection::produceMovie(const QModelIndex& index)
+void MovieCollection::activate()
+{
+    QWidget* parent = dynamic_cast<QWidget*>(this->parent());
+    if (parent)
+    {
+        parent->hide();
+    }
+
+    this->setParent(0);
+    this->showFullScreen();
+}
+
+IMovieCollectionItem* MovieCollection::produceMovie(const QModelIndex& index)
 {
     if (this->model->isDir(index))
     {

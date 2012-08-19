@@ -8,9 +8,10 @@
 
 #include "GridLayout.h"
 #include "GridLayoutScrollerWithCursor.h"
+#include "IMovieCollectionItem.h"
 #include "MovieCollectionModel.h"
 
-class MovieCollection : public QWidget
+class MovieCollection : public IMovieCollectionItem
 {
     Q_OBJECT
 
@@ -20,6 +21,8 @@ class MovieCollection : public QWidget
     protected:
         void paintEvent(QPaintEvent* event);
         void keyPressEvent(QKeyEvent* event);
+
+        void activate();
 
     private:
         int screenWidth;
@@ -34,8 +37,8 @@ class MovieCollection : public QWidget
         QImage text;
         QMap<int, QImage> scaledTexts;
 
-        QMap<QString, QWidget*> movies;
-        QWidget* produceMovie(const QModelIndex& index);
+        QMap<QString, IMovieCollectionItem*> movies;
+        IMovieCollectionItem* produceMovie(const QModelIndex& index);
 
         QString movieTitle(QString fileName);
 

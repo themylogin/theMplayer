@@ -5,7 +5,9 @@
 #include <QString>
 #include <QWidget>
 
-class Movie : public QWidget
+#include "IMovieCollectionItem.h"
+
+class Movie : public IMovieCollectionItem
 {
     Q_OBJECT
 
@@ -14,6 +16,8 @@ class Movie : public QWidget
 
     protected:
         void paintEvent(QPaintEvent* event);
+
+        void activate();
 
     private:
         QString title;

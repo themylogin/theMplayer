@@ -21,7 +21,8 @@ HEADERS += SetupDialog.h \
     Movie.h \
     MovieCollection.h \
     MovieCollectionModel.h \
-    MovieFile.h
+    MovieFile.h \
+    IMovieCollectionItem.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \

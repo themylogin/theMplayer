@@ -11,7 +11,7 @@
 #include "Utils.h"
 
 Movie::Movie(QString title, QString path, QWidget* parent) :
-    QWidget(parent)
+    IMovieCollectionItem(parent)
 {
     this->title = title;
     this->path = path;
@@ -90,4 +90,9 @@ void Movie::paintEvent(QPaintEvent* event)
     painter.setPen(borderPen);
     painter.setBrush(QColor(0, 0, 0, 0));
     painter.drawRect(0, 0, this->width(), this->height());
+}
+
+void Movie::activate()
+{
+
 }
