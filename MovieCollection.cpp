@@ -53,17 +53,38 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
-    if (this->parent() != 0)
+    if (!this->isFullScreen())
     {
         QPen borderPen;
         borderPen.setBrush(QColor(203, 203, 203));
         borderPen.setWidth(2);
         painter.setPen(borderPen);
-        painter.drawRect(0, 0, this->width(), this->height());
+        painter.setBrush(QColor(0, 0, 0));
     }
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRect(0, 0, this->width(), this->height());
 
     float factorX = (float)this->width() / this->layout->getGridWidth();
     float factorY = (float)this->height() / this->layout->getGridHeight();
+
+    // Cursor
+    for (int col = 0; col < this->layout->getCols(); col++)
+    {
+        for (int row = 0; row < this->layout->getRows(); row++)
+        {
+            if (this->scroller->isCurrent(col, row))
+            {
+                QPen pen(QColor(255, 0, 0));
+                pen.setWidth(this->layout->getElementHMargin() * factorX);
+
+                painter.setPen(pen);
+                painter.drawRect(QRect((this->layout->getX(col)) * factorX,
+                                       (this->layout->getY(row)) * factorY,
+                                       (this->layout->getElementWidth()) * factorX,
+                                       (this->layout->getElementHeight()) * factorY));
+            }
+        }
+    }
 
     // Elements
     QStringList keysToShow;    
@@ -102,25 +123,6 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     for (int i = 0; i < keysToShow.length(); i++)
     {
         this->movies[keysToShow[i]]->show();
-    }
-
-    // Cursor
-    for (int col = 0; col < this->layout->getCols(); col++)
-    {
-        for (int row = 0; row < this->layout->getRows(); row++)
-        {
-            if (this->scroller->isCurrent(col, row))
-            {
-                QPen pen(QColor(255, 0, 0));
-                pen.setWidth(this->layout->getElementHMargin() * factorX);
-
-                painter.setPen(pen);
-                painter.drawRect(QRect((this->layout->getX(col)) * factorX,
-                                       (this->layout->getY(row)) * factorY,
-                                       (this->layout->getElementWidth()) * factorX,
-                                       (this->layout->getElementHeight()) * factorY));
-            }
-        }
     }
 }
 

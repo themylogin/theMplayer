@@ -88,6 +88,14 @@ void Movie::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::HighQualityAntialiasing);
     painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
+    QPen borderPen;
+    borderPen.setBrush(QColor(203, 203, 203));
+    borderPen.setWidth(2);
+
+    painter.setPen(borderPen);
+    painter.setBrush(QColor(0, 0, 0));
+    painter.drawRect(0, 0, this->width(), this->height());
+
     painter.save();
     painter.scale((float) this->width() / this->supposedWidth, (float) this->height() / this->supposedHeight);
     {
@@ -98,9 +106,7 @@ void Movie::paintEvent(QPaintEvent* event)
     }
     painter.restore();
 
-    QPen borderPen;
-    borderPen.setBrush(QColor(203, 203, 203));
-    borderPen.setWidth(2);
     painter.setPen(borderPen);
+    painter.setBrush(QColor(0, 0, 0, 0));
     painter.drawRect(0, 0, this->width(), this->height());
 }
