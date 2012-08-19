@@ -37,8 +37,7 @@ class MovieCollection : public QWidget
         QString movieTitle(QString fileName);
 
     private slots:
-        void test(const QModelIndex&, int, int);
-        void test2(const QModelIndex &, int, int, const QModelIndex &, int);
+        void moviesInserted(const QModelIndex&, int, int);
 };
 
 #endif // MOVIECOLLECTION_H

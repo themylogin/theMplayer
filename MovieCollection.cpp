@@ -30,20 +30,7 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
 
     this->model = model;
     this->modelRootIndex = modelRootIndex;
-    connect(this->model, SIGNAL(rowsInserted(const QModelIndex&, int, int)), this, SLOT(test(const QModelIndex&, int, int)));
-    connect(this->model, SIGNAL(rowsMoved(const QModelIndex &, int, int, const QModelIndex &, int)), this, SLOT(test2(const QModelIndex &, int, int, const QModelIndex &, int)));
-}
-
-void MovieCollection::test(const QModelIndex&, int, int)
-{
-    qDebug() << "rowsInserted";
-    update();
-}
-
-void MovieCollection::test2(const QModelIndex &, int, int, const QModelIndex &, int)
-{
-    qDebug() << "rowsMoved";
-    update();
+    connect(this->model, SIGNAL(rowsInserted(const QModelIndex&, int, int)), this, SLOT(moviesInserted(const QModelIndex&, int, int)));
 }
 
 void MovieCollection::paintEvent(QPaintEvent* event)
@@ -167,4 +154,9 @@ QString MovieCollection::movieTitle(QString fileName)
     title.replace(QRegExp("\\.[a-zA-Z0-9]*$"), QString("")); // cut extension
     title.replace(QRegExp("\\.|_"), QString(" "));
     return title;
+}
+
+void MovieCollection::moviesInserted(const QModelIndex&, int, int)
+{
+    update();
 }
