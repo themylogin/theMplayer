@@ -80,7 +80,7 @@ bool MovieCollectionModel::lessThan(const QModelIndex& left, const QModelIndex& 
 bool MovieCollectionModel::isVideoFile(const QModelIndex& fsModelIndex) const
 {
     QString cmp = this->fsModel->fileName(fsModelIndex).toLower();
-    return cmp.endsWith(".avi") || cmp.endsWith(".mkv");
+    return cmp.endsWith(".avi") || cmp.endsWith(".mkv") || cmp.endsWith(".mp4");
 }
 
 int MovieCollectionModel::hasVideoFiles(const QModelIndex& fsModelIndex) const

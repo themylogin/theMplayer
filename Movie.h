@@ -2,6 +2,7 @@
 #define MOVIE_H
 
 #include <QMap>
+#include <QProcess>
 #include <QString>
 #include <QWidget>
 
@@ -31,6 +32,8 @@ class Movie : public MovieCollectionItem
 
         QMap<int, QImage> scaledTexts;
         QMap<int, QImage> scaledImages;
+
+        QProcess process;
 };
 
 #endif // MOVIE_H

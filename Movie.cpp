@@ -5,7 +5,9 @@
 #include <QFont>
 #include <QPainter>
 #include <QPen>
+#include <QProcess>
 #include <QSettings>
+#include <QStringList>
 
 #include "MovieFile.h"
 #include "Utils.h"
@@ -94,5 +96,6 @@ void Movie::paintEvent(QPaintEvent* event)
 
 void Movie::activate()
 {
-
+    this->process.setEnvironment(QProcess::systemEnvironment());
+    this->process.start("./theMplayerShell.py", QStringList() << this->path);
 }
