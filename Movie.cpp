@@ -3,13 +3,14 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <QFont>
+#include <QMovie>
 #include <QPainter>
 #include <QPen>
 #include <QProcess>
 #include <QSettings>
 #include <QStringList>
+#include <QtConcurrentRun>
 
-#include "MovieFile.h"
 #include "Utils.h"
 
 Movie::Movie(QString title, QString path, QWidget* parent) :
@@ -35,25 +36,20 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
         QDir(theMplayerThumbnailsDir).mkdir(theMplayerThumbnailsDir);
     }
 
-    QString cacheFilename = theMplayerThumbnailsDir + "/" + QString(QCryptographicHash::hash(
+    this->cacheFilename = theMplayerThumbnailsDir + "/" + QString(QCryptographicHash::hash(
         (path + "#" + QString::number(this->supposedWidth) + "#" + QString::number(this->supposedHeight)).toUtf8(),
         QCryptographicHash::Md5).toHex()) + ".jpg";
-    if (QFile::exists(cacheFilename))
+    if (QFile::exists(this->cacheFilename))
     {
-        this->image = QImage(cacheFilename);
+        this->image = QImage(this->cacheFilename);
     }
     else
     {
-        MovieFile* movieFile = new MovieFile(path);
-        int thumbnailWidth = this->supposedWidth;
-        int thumbnailHeight = -1;
-        uint8_t* thumbnailData = movieFile->getRGB32Thumbnail(thumbnailWidth, thumbnailHeight);
-        uint8_t* imageData = new uint8_t[thumbnailWidth * thumbnailHeight * 4];
-        memcpy(imageData, thumbnailData, thumbnailWidth * thumbnailHeight * 4);
-        delete movieFile;
+        this->image = QImage(":/images/loading.png");
 
-        this->image = QImage(imageData, thumbnailWidth, thumbnailHeight, QImage::Format_ARGB32);
-        // this->image.save(cacheFilename, 0, 85);
+        this->futureImage = QtConcurrent::run(&Utils::getMovieThumbnail, path);
+        connect(&this->futureImageWatcher, SIGNAL(finished()), this, SLOT(futureImageReady()));
+        this->futureImageWatcher.setFuture(this->futureImage);
     }
 
     // text
@@ -101,4 +97,15 @@ void Movie::activate()
 {
     this->process.setEnvironment(QProcess::systemEnvironment());
     this->process.start("./theMplayerShell.py", QStringList() << this->path);
+}
+
+void Movie::futureImageReady()
+{
+    if (!this->futureImage.result().isNull())
+    {
+        this->image = this->futureImage.result();
+        this->image.save(this->cacheFilename);
+        this->scaledImages.clear();
+        this->update();
+    }
 }

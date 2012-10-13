@@ -1,6 +1,8 @@
 #ifndef MOVIE_H
 #define MOVIE_H
 
+#include <QFuture>
+#include <QFutureWatcher>
 #include <QMap>
 #include <QProcess>
 #include <QString>
@@ -29,11 +31,17 @@ class Movie : public MovieCollectionItem
 
         QImage text;
         QImage image;
+        QFuture<QImage> futureImage;
+        QFutureWatcher<QImage> futureImageWatcher;
+        QString cacheFilename;
 
         QMap<int, QImage> scaledTexts;
         QMap<int, QImage> scaledImages;
 
         QProcess process;
+
+    private slots:
+        void futureImageReady();
 };
 
 #endif // MOVIE_H

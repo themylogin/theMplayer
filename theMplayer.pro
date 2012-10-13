@@ -7,8 +7,7 @@ SOURCES += main.cpp \
     GridLayoutScrollerWithCursor.cpp \
     Movie.cpp \
     MovieCollection.cpp \
-    MovieCollectionModel.cpp \
-    MovieFile.cpp
+    MovieCollectionModel.cpp
 HEADERS += SetupDialog.h \
     main.h \
     Utils.h \
@@ -21,10 +20,12 @@ HEADERS += SetupDialog.h \
     Movie.h \
     MovieCollection.h \
     MovieCollectionModel.h \
-    MovieFile.h \
     MovieCollectionItem.h
 LIBS += -lavcodec \
     -lavformat \
     -lavutil \
     -lswscale
 QMAKE_CXXFLAGS += -std=c++0x
+
+RESOURCES += \
+    theMplayer.qrc
