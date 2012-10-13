@@ -36,6 +36,7 @@ class MovieFile
 
         AVFormatContext*        avFormatContext;
         AVCodec*                avCodec;
+        bool                    avCodecOpen;
         int                     videoIndex;
 
         AVFrame*                avFrame;

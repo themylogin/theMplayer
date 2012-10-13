@@ -48,9 +48,12 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
         int thumbnailWidth = this->supposedWidth;
         int thumbnailHeight = -1;
         uint8_t* thumbnailData = movieFile->getRGB32Thumbnail(thumbnailWidth, thumbnailHeight);
-        this->image = QImage(thumbnailData, thumbnailWidth, thumbnailHeight, QImage::Format_ARGB32);
-        // delete movieFile;
-        this->image.save(cacheFilename, 0, 85);
+        uint8_t* imageData = new uint8_t[thumbnailWidth * thumbnailHeight * 4];
+        memcpy(imageData, thumbnailData, thumbnailWidth * thumbnailHeight * 4);
+        delete movieFile;
+
+        this->image = QImage(imageData, thumbnailWidth, thumbnailHeight, QImage::Format_ARGB32);
+        // this->image.save(cacheFilename, 0, 85);
     }
 
     // text

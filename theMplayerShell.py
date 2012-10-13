@@ -14,7 +14,7 @@ class MPlayerShell:
 
         self.directory = os.path.dirname(os.path.abspath(filename))
         self.current_file = os.path.basename(os.path.abspath(filename))
-        playlist_files = natural_sort(filter(lambda x: not os.path.isdir(x), os.listdir(self.directory))) if populate_playlist else [self.current_file]
+        playlist_files = natural_sort(filter(lambda x: not os.path.isdir(x) and os.path.splitext(x)[1].lower()[1:] in ["avi", "m2ts", "mkv", "mp4"], os.listdir(self.directory))) if populate_playlist else [self.current_file]
 
         self.playlist = []
         reached_current_file = False
@@ -54,14 +54,16 @@ class MPlayerShell:
 
         return int(re.search(r"ID_LENGTH=([0-9]+)", subprocess.check_output(["mplayer", "-ao", "null", "-vc", ",", "-vo", "null", "-frames", "0", "-identify", filename], stderr=subprocess.STDOUT)).group(1))
 
-    def init_x11(self):        
+    def init_x11(self):
         from Xlib import X, XK
         from Xlib.display import Display 
 
         disp = Display()
         root = disp.screen().root
         root.change_attributes(event_mask=X.KeyPressMask)
-        root.grab_key(disp.keysym_to_keycode(XK.string_to_keysym("n")), X.AnyModifier, 1, X.GrabModeAsync, X.GrabModeAsync)
+
+        self.WINDOW_KEY = disp.keysym_to_keycode(XK.string_to_keysym("n"))
+        root.grab_key(self.WINDOW_KEY, X.AnyModifier, 1, X.GrabModeAsync, X.GrabModeAsync)
 
         import threading
         t = threading.Thread(target=lambda: self.process_x11(disp))
@@ -69,14 +71,18 @@ class MPlayerShell:
         t.start()
     
     def process_x11(self, disp):
+        import gtk
         from Xlib import X
 
         while True:
             event = disp.next_event()
         
-            if aEvent.type == X.KeyPress: 
-                keycode = aEvent.detail 
-                print keycode
+            if event.type == X.KeyPress: 
+                keycode = event.detail 
+                if keycode == self.WINDOW_KEY:
+                    gtk.threads_enter()
+                    self.window.set_visible(not self.window.get_visible())
+                    gtk.threads_leave()
 
     def init_gtk(self):
         import pygtk
@@ -87,6 +93,39 @@ class MPlayerShell:
         t = threading.Thread(target=gtk.main)
         t.daemon = True
         t.start()
+
+        gtk.threads_enter()
+
+        def expose(widget, event):
+            import cairo
+            import pango
+            import pangocairo
+
+            cr = widget.window.cairo_create()
+
+            cr.set_source_rgb(0.30, 0.60, 0.02)
+            cr.rectangle(event.area.x, event.area.y,
+                         event.area.width, event.area.height)
+            cr.fill()
+
+            cr.set_source_rgb(1.0, 1.0, 1.0)
+            cr.select_font_face("Calibri", cairo.FONT_SLANT_NORMAL, cairo.FONT_WEIGHT_NORMAL)
+            cr.set_font_size(48)
+            cr.move_to(20, 20)
+            cr.show_text(self.get_current_file()["file"])
+
+        self.window = gtk.Window(type=gtk.WINDOW_POPUP)
+        self.window.set_keep_above(True)
+        self.window.set_gravity(gtk.gdk.GRAVITY_NORTH_EAST)
+        self.window.resize(960, 1080)
+        self.window.move(960, 0)
+        self.widget = gtk.DrawingArea()
+        self.widget.connect("expose-event", expose)
+        self.widget.show()
+        self.window.add(self.widget)
+        self.window.show()
+
+        gtk.threads_leave()
 
     def play(self):
         import fcntl, os, os.path, re, subprocess, threading, time
@@ -113,11 +152,13 @@ class MPlayerShell:
                     m_pos = re.search("^A:([0-9. ]+)", out)
                     if m_pos:
                         self.current_file_position = float(m_pos.group(m_pos.lastindex))
+                    time.sleep(0.1)
 
                 end = int(time.time())
                 file["state"] = self.PLAYLIST_INACTIVE
 
-                threading.Thread(target=lambda: self.submit_to_timeline(path, self.ctime(path), start, end)).start()
+                #print path, start, end
+                #threading.Thread(target=lambda: self.submit_to_timeline(path, self.ctime(path), start, end)).start()
 
     def ctime(self, path):
         import os
@@ -175,27 +216,10 @@ class MPlayerShell:
             "data"      : simplejson.dumps({ "title" : title, "download" : download, "start" : start })
         })
 
-    def show_window(self):
-        import gtk
-
-        gtk.threads_enter()
-        
-        def window_expose(widget, event):
-            cr = widget.window.cairo_create()
-            cr.set_source_rgb(1.0, 1.0, 0.5)
-            cr.rectangle(event.area.x, event.area.y,
-                         event.area.width, event.area.height)
-            cr.fill()
-
-        window = gtk.Window(type=gtk.WINDOW_POPUP)
-        window.set_keep_above(True)
-        window.set_gravity(gtk.gdk.GRAVITY_NORTH_EAST)
-        window.resize(960, 1080)
-        window.move(960, 0)
-        window.connect("expose-event", window_expose)
-        window.show()
-
-        gtk.threads_leave()
+    def get_current_file(self):
+        for file in self.playlist:
+            if file["state"] == self.PLAYLIST_CURRENT:
+                return file
 
 if __name__ == "__main__":
     import sys

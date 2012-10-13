@@ -12,8 +12,11 @@ MovieFile::MovieFile(QString filename)
         MovieFile::avRegistered = true;
     }
     this->avFormatContext = NULL;
+    this->avCodecOpen = false;
 
     this->frameAllocated = false;
+    this->avFrameRGB = NULL;
+    this->buffer = NULL;
 
     if (avformat_open_input(&this->avFormatContext, filename.toUtf8(), NULL, NULL) != 0)
     {
@@ -48,6 +51,7 @@ MovieFile::MovieFile(QString filename)
     {
         throw UnableToOpenDecoder;
     }
+    this->avCodecOpen = true;
 
     if (this->getDuration() < 1)
     {
@@ -57,19 +61,29 @@ MovieFile::MovieFile(QString filename)
 
 MovieFile::~MovieFile()
 {
+    if (this->frameAllocated)
+    {
+        this->freeFrame();
+    }
+
+    if (this->avFrameRGB != NULL)
+    {
+        av_free(this->avFrameRGB);
+    }
+
+    if (this->buffer != NULL)
+    {
+        av_free(this->buffer);
+    }
+
     if (this->avFormatContext != NULL)
     {
-        if (this->avCodec != NULL)
+        if (this->avCodecOpen)
         {
             avcodec_close(this->avFormatContext->streams[this->videoIndex]->codec);
         }
 
         avformat_close_input(&this->avFormatContext);
-    }
-
-    if (this->frameAllocated)
-    {
-        this->freeFrame();
     }
 }
 
@@ -108,8 +122,7 @@ uint8_t* MovieFile::getRGB32Thumbnail(int& width, int& height)
         throw std::bad_alloc();
     }
 
-    int numBytes = avpicture_get_size(PIX_FMT_RGB32, width, height);
-    this->buffer = new uint8_t[numBytes];
+    this->buffer = (uint8_t*)av_malloc(avpicture_get_size(PIX_FMT_RGB32, width, height));
     avpicture_fill((AVPicture *) this->avFrameRGB, this->buffer, PIX_FMT_RGB32, width, height);
 
     struct SwsContext* scConvertContext = sws_getContext(this->avFormatContext->streams[this->videoIndex]->codec->width,
