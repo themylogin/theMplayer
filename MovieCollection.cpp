@@ -41,7 +41,11 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
 
 void MovieCollection::paintEvent(QPaintEvent* event)
 {
-    (void) event;
+    if (event->region().rectCount() > 1)
+    {
+        // skip recursive repaint
+        return;
+    }
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -126,7 +130,10 @@ void MovieCollection::paintEvent(QPaintEvent* event)
         {
             this->scaledTexts[this->width()] = QPixmap::fromImage(this->text.scaledToWidth(this->width(), Qt::SmoothTransformation));
         }
-        this->textLabel.setPixmap(this->scaledTexts[this->width()]);
+        if (this->textLabel.pixmap() == NULL || this->textLabel.pixmap()->width() != this->width())
+        {
+            this->textLabel.setPixmap(this->scaledTexts[this->width()]);
+        }
         this->textLabel.setGeometry(QRect(0, 0, this->width(), this->height()));
         this->textLabel.show();
     }
