@@ -2,6 +2,7 @@
 #define MOVIECOLLECTION_H
 
 #include <QKeyEvent>
+#include <QLabel>
 #include <QMap>
 #include <QString>
 #include <QWidget>
@@ -36,6 +37,7 @@ class MovieCollection : public MovieCollectionItem
 
         QImage text;
         QMap<int, QImage> scaledTexts;
+        QLabel textLabel;
 
         QMap<QString, MovieCollectionItem*> movies;
         MovieCollectionItem* produceMovie(const QModelIndex& index);

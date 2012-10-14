@@ -34,6 +34,7 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
 
     this->text = Utils::drawOutlinedText(this->movieTitle(this->model->fileName(this->modelRootIndex)),
                                          settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt());
+    this->textLabel.setParent(this);
 
     this->back = 0;
 }
@@ -96,6 +97,7 @@ void MovieCollection::paintEvent(QPaintEvent* event)
             if (!this->movies.contains(key))
             {
                 this->movies[key] = this->produceMovie(index);
+                this->movies[key]->stackUnder(&this->textLabel);
             }
 
             this->movies[key]->setGeometry(QRect(this->layout->getX(col) * factorX,
@@ -124,8 +126,13 @@ void MovieCollection::paintEvent(QPaintEvent* event)
         {
             this->scaledTexts[this->width()] = this->text.scaledToWidth(this->width(), Qt::SmoothTransformation);
         }
-        QImage text = this->scaledTexts[this->width()];
-        painter.drawImage(0, 0, text);
+        this->textLabel.setPixmap(QPixmap::fromImage(this->scaledTexts[this->width()]));
+        this->textLabel.setGeometry(QRect(0, 0, this->width(), this->height()));
+        this->textLabel.show();
+    }
+    else
+    {
+        this->textLabel.hide();
     }
 }
 
