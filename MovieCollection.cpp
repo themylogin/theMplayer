@@ -124,9 +124,9 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     {
         if (!this->scaledTexts.contains(this->width()))
         {
-            this->scaledTexts[this->width()] = this->text.scaledToWidth(this->width(), Qt::SmoothTransformation);
+            this->scaledTexts[this->width()] = QPixmap::fromImage(this->text.scaledToWidth(this->width(), Qt::SmoothTransformation));
         }
-        this->textLabel.setPixmap(QPixmap::fromImage(this->scaledTexts[this->width()]));
+        this->textLabel.setPixmap(this->scaledTexts[this->width()]);
         this->textLabel.setGeometry(QRect(0, 0, this->width(), this->height()));
         this->textLabel.show();
     }

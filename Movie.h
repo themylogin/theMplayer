@@ -35,8 +35,8 @@ class Movie : public MovieCollectionItem
         QFutureWatcher<QImage> futureImageWatcher;
         QString cacheFilename;
 
-        QMap<int, QImage> scaledTexts;
-        QMap<int, QImage> scaledImages;
+        QMap<int, QPixmap> scaledTexts;
+        QMap<int, QPixmap> scaledImages;
 
         QProcess process;
 

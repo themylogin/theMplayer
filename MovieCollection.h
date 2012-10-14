@@ -36,7 +36,7 @@ class MovieCollection : public MovieCollectionItem
         QPersistentModelIndex modelRootIndex;
 
         QImage text;
-        QMap<int, QImage> scaledTexts;
+        QMap<int, QPixmap> scaledTexts;
         QLabel textLabel;
 
         QMap<QString, MovieCollectionItem*> movies;
