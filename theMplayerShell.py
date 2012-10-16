@@ -157,8 +157,8 @@ class MPlayerShell:
                 end = int(time.time())
                 file["state"] = self.PLAYLIST_INACTIVE
 
-                #print path, start, end
-                #threading.Thread(target=lambda: self.submit_to_timeline(path, self.ctime(path), start, end)).start()
+                print path, start, end
+                threading.Thread(target=lambda: self.submit_to_timeline(path, self.ctime(path), start, end)).start()
 
     def ctime(self, path):
         import os

@@ -29,14 +29,12 @@ class Movie : public MovieCollectionItem
         int supposedWidth;
         int supposedHeight;
 
-        QImage text;
         QImage image;
         QFuture<QImage> futureImage;
         QFutureWatcher<QImage> futureImageWatcher;
         QString cacheFilename;
 
-        QMap<int, QPixmap> scaledTexts;
-        QMap<int, QPixmap> scaledImages;
+        QMap<int, QPixmap> cachedRepresentations;
 
         QProcess process;
 
