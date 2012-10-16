@@ -1,6 +1,8 @@
 #ifndef MOVIECOLLECTION_H
 #define MOVIECOLLECTION_H
 
+#include <QFuture>
+#include <QFutureWatcher>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMap>
@@ -36,6 +38,8 @@ class MovieCollection : public MovieCollectionItem
         QPersistentModelIndex modelRootIndex;
 
         QImage text;
+        QFuture<QImage> futureText;
+        QFutureWatcher<QImage> futureTextWatcher;
         QMap<int, QPixmap> scaledTexts;
         QLabel textLabel;
 
@@ -48,6 +52,7 @@ class MovieCollection : public MovieCollectionItem
 
     private slots:
         void moviesInserted(const QModelIndex&, int, int);
+        void futureTextReady();
 };
 
 #endif // MOVIECOLLECTION_H

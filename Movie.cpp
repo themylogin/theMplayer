@@ -58,6 +58,10 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
         connect(&this->futureImageWatcher, SIGNAL(finished()), this, SLOT(futureImageReady()));
         this->futureImageWatcher.setFuture(this->futureImage);
     }
+
+    this->futureText = QtConcurrent::run(&Utils::drawOutlinedText, this->title, this->supposedWidth, this->supposedHeight);
+    connect(&this->futureTextWatcher, SIGNAL(finished()), this, SLOT(futureTextReady()));
+    this->futureTextWatcher.setFuture(this->futureText);
 }
 
 #include <QDebug>
@@ -93,7 +97,10 @@ void Movie::paintEvent(QPaintEvent* event)
                                 image.width(), image.height()),
                           image);
 
-        painter.drawImage(0, 0, Utils::drawOutlinedText(this->title, this->supposedWidth, this->supposedHeight));
+        if (!this->text.isNull())
+        {
+            painter.drawImage(0, 0, this->text);
+        }
 
         QPen borderPen;
         borderPen.setBrush(QColor(203, 203, 203));
@@ -134,6 +141,16 @@ void Movie::futureImageReady()
     {
         this->image = this->futureImage.result();
         this->image.save(this->cacheFilename);
+        this->cachedRepresentations.clear();
+        this->update();
+    }
+}
+
+void Movie::futureTextReady()
+{
+    if (!this->futureText.result().isNull())
+    {
+        this->text = this->futureText.result();
         this->cachedRepresentations.clear();
         this->update();
     }

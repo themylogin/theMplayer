@@ -37,6 +37,10 @@ class Movie : public MovieCollectionItem
         QFutureWatcher<QImage> futureImageWatcher;
         QString cacheFilename;
 
+        QImage text;
+        QFuture<QImage> futureText;
+        QFutureWatcher<QImage> futureTextWatcher;
+
         QMap<int, QPixmap> cachedRepresentations;
 
         QProcess process;
@@ -44,6 +48,8 @@ class Movie : public MovieCollectionItem
     private slots:
         void futureImageReadyFromCache();
         void futureImageReady();
+
+        void futureTextReady();
 };
 
 #endif // MOVIE_H

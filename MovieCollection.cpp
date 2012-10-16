@@ -1,6 +1,7 @@
 #include "MovieCollection.h"
 
 #include <QApplication>
+#include <QtConcurrentRun>
 #include <QDesktopWidget>
 #include <QPainter>
 #include <QSettings>
@@ -33,8 +34,10 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
     this->modelRootIndex = modelRootIndex;
     connect(this->model, SIGNAL(rowsInserted(const QModelIndex&, int, int)), this, SLOT(moviesInserted(const QModelIndex&, int, int)));
 
-    this->text = Utils::drawOutlinedText(this->movieTitle(this->model->fileName(this->modelRootIndex)),
+    this->futureText = QtConcurrent::run(&Utils::drawOutlinedText, this->movieTitle(this->model->fileName(this->modelRootIndex)),
                                          settings.value("movieWidth").toInt(), settings.value("movieHeight").toInt());
+    connect(&this->futureTextWatcher, SIGNAL(finished()), this, SLOT(futureTextReady()));
+    this->futureTextWatcher.setFuture(this->futureText);
     this->textLabel.setParent(this);
 
     this->back = 0;
@@ -128,22 +131,25 @@ void MovieCollection::paintEvent(QPaintEvent* event)
     }
 
     // text
-    if (!this->isFullScreen())
+    if (!this->text.isNull())
     {
-        if (!this->scaledTexts.contains(this->width()))
+        if (!this->isFullScreen())
         {
-            this->scaledTexts[this->width()] = QPixmap::fromImage(this->text.scaledToWidth(this->width(), Qt::SmoothTransformation));
+            if (!this->scaledTexts.contains(this->width()))
+            {
+                this->scaledTexts[this->width()] = QPixmap::fromImage(this->text.scaledToWidth(this->width(), Qt::SmoothTransformation));
+            }
+            if (this->textLabel.pixmap() == NULL || this->textLabel.pixmap()->width() != this->width())
+            {
+                this->textLabel.setPixmap(this->scaledTexts[this->width()]);
+            }
+            this->textLabel.setGeometry(QRect(0, 0, this->width(), this->height()));
+            this->textLabel.show();
         }
-        if (this->textLabel.pixmap() == NULL || this->textLabel.pixmap()->width() != this->width())
+        else
         {
-            this->textLabel.setPixmap(this->scaledTexts[this->width()]);
+            this->textLabel.hide();
         }
-        this->textLabel.setGeometry(QRect(0, 0, this->width(), this->height()));
-        this->textLabel.show();
-    }
-    else
-    {
-        this->textLabel.hide();
     }
 }
 
@@ -255,3 +261,14 @@ void MovieCollection::moviesInserted(const QModelIndex&, int, int)
         timer.start();
     }
 }
+
+void MovieCollection::futureTextReady()
+{
+    if (!this->futureText.result().isNull())
+    {
+        this->text = this->futureText.result();
+        this->scaledTexts.clear();
+        this->update();
+    }
+}
+
