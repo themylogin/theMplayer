@@ -39,6 +39,7 @@ class Movie : public MovieCollectionItem
         QProcess process;
 
     private slots:
+        void futureImageReadyFromCache();
         void futureImageReady();
 };
 

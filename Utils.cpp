@@ -110,7 +110,6 @@ QImage Utils::drawOutlinedText(QString text, int width, int height)
     return image;
 }
 
-#include <QDebug>
 QImage Utils::getMovieThumbnail(QString filename)
 {
     QImage thumbnail;
@@ -254,4 +253,9 @@ QImage Utils::getMovieThumbnail(QString filename)
         Utils::avCodecMutex.unlock();
 
     return thumbnail;
+}
+
+QImage Utils::loadImageFromFile(QString filename)
+{
+    return QImage(filename);
 }

@@ -36,17 +36,18 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
         QDir(theMplayerThumbnailsDir).mkdir(theMplayerThumbnailsDir);
     }
 
+    this->image = QImage(":/images/loading.png");
     this->cacheFilename = theMplayerThumbnailsDir + "/" + QString(QCryptographicHash::hash(
         (path + "#" + QString::number(this->supposedWidth) + "#" + QString::number(this->supposedHeight)).toUtf8(),
         QCryptographicHash::Md5).toHex()) + ".jpg";
     if (QFile::exists(this->cacheFilename))
     {
-        this->image = QImage(this->cacheFilename);
+        this->futureImage = QtConcurrent::run(&Utils::loadImageFromFile, this->cacheFilename);
+        connect(&this->futureImageWatcher, SIGNAL(finished()), this, SLOT(futureImageReadyFromCache()));
+        this->futureImageWatcher.setFuture(this->futureImage);
     }
     else
     {
-        this->image = QImage(":/images/loading.png");
-
         this->futureImage = QtConcurrent::run(&Utils::getMovieThumbnail, path);
         connect(&this->futureImageWatcher, SIGNAL(finished()), this, SLOT(futureImageReady()));
         this->futureImageWatcher.setFuture(this->futureImage);
@@ -95,12 +96,23 @@ void Movie::activate()
     this->process.start("./theMplayerShell.py", QStringList() << this->path);
 }
 
+void Movie::futureImageReadyFromCache()
+{
+    if (!this->futureImage.result().isNull())
+    {
+        this->image = this->futureImage.result();
+        this->cachedRepresentations.clear();
+        this->update();
+    }
+}
+
 void Movie::futureImageReady()
 {
     if (!this->futureImage.result().isNull())
     {
         this->image = this->futureImage.result();
         this->image.save(this->cacheFilename);
+        this->cachedRepresentations.clear();
         this->update();
     }
 }
