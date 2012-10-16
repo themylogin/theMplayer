@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QSettings>
 #include <QStringList>
+#include <QThreadPool>
 
 #include "MovieCollection.h"
 #include "MovieCollectionModel.h"

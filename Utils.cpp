@@ -12,6 +12,7 @@ extern "C"
 #include <QFontMetrics>
 #include <QPainter>
 #include <QPainterPath>
+#include <QThread>
 
 bool Utils::avRegistered = false;
 QMutex Utils::avRegisteredMutex;
@@ -112,6 +113,8 @@ QImage Utils::drawOutlinedText(QString text, int width, int height)
 
 QImage Utils::getMovieThumbnail(QString filename)
 {
+    QThread::currentThread()->setPriority(QThread::IdlePriority);
+
     QImage thumbnail;
     AVFormatContext* avFormatContext = NULL;
     int videoIndex = -1;
@@ -257,5 +260,7 @@ QImage Utils::getMovieThumbnail(QString filename)
 
 QImage Utils::loadImageFromFile(QString filename)
 {
+    QThread::currentThread()->setPriority(QThread::IdlePriority);
+
     return QImage(filename);
 }
