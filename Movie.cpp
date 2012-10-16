@@ -13,6 +13,9 @@
 
 #include "Utils.h"
 
+QImage Movie::loadingImage;
+QMap<int, QImage> Movie::loadingImages;
+
 Movie::Movie(QString title, QString path, QWidget* parent) :
     MovieCollectionItem(parent)
 {
@@ -36,7 +39,10 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
         QDir(theMplayerThumbnailsDir).mkdir(theMplayerThumbnailsDir);
     }
 
-    this->image = QImage(":/images/loading.png");
+    if (Movie::loadingImage.isNull())
+    {
+        Movie::loadingImage = QImage(":/images/loading.png");
+    }
     this->cacheFilename = theMplayerThumbnailsDir + "/" + QString(QCryptographicHash::hash(
         (path + "#" + QString::number(this->supposedWidth) + "#" + QString::number(this->supposedHeight)).toUtf8(),
         QCryptographicHash::Md5).toHex()) + ".jpg";
@@ -54,8 +60,11 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
     }
 }
 
+#include <QDebug>
 void Movie::paintEvent(QPaintEvent* event)
 {
+    qDebug() << "movie " << this->title;
+
     (void) event;
 
     if (!this->cachedRepresentations.contains(this->width()))
@@ -67,7 +76,19 @@ void Movie::paintEvent(QPaintEvent* event)
         painter.setRenderHint(QPainter::HighQualityAntialiasing);
         painter.setRenderHint(QPainter::SmoothPixmapTransform);
 
-        QImage image = this->image.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        QImage image;
+        if (this->image.isNull())
+        {
+            if (!Movie::loadingImages.contains(this->width()))
+            {
+                Movie::loadingImages[this->width()] = Movie::loadingImage.scaledToWidth(this->width(), Qt::SmoothTransformation);
+            }
+            image = Movie::loadingImages[this->width()];
+        }
+        else
+        {
+            image = this->image.scaledToWidth(this->width(), Qt::SmoothTransformation);
+        }
         painter.drawImage(QRect(0,             (this->height() - image.height()) / 2,
                                 image.width(), image.height()),
                           image);
@@ -102,6 +123,7 @@ void Movie::futureImageReadyFromCache()
     {
         this->image = this->futureImage.result();
         this->cachedRepresentations.clear();
+        qDebug() << "loaded from cache";
         this->update();
     }
 }

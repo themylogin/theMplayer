@@ -29,6 +29,9 @@ class Movie : public MovieCollectionItem
         int supposedWidth;
         int supposedHeight;
 
+        static QImage loadingImage;
+        static QMap<int, QImage> loadingImages;
+
         QImage image;
         QFuture<QImage> futureImage;
         QFutureWatcher<QImage> futureImageWatcher;

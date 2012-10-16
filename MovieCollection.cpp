@@ -5,6 +5,7 @@
 #include <QPainter>
 #include <QSettings>
 #include <QStringList>
+#include <QTimer>
 
 #include "Movie.h"
 #include "Utils.h"
@@ -39,6 +40,7 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
     this->back = 0;
 }
 
+#include <QDebug>
 void MovieCollection::paintEvent(QPaintEvent* event)
 {
     if (event->region().rectCount() > 1)
@@ -46,6 +48,8 @@ void MovieCollection::paintEvent(QPaintEvent* event)
         // skip recursive repaint
         return;
     }
+
+    qDebug() << "update";
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -236,5 +240,18 @@ QString MovieCollection::movieTitle(QString fileName)
 
 void MovieCollection::moviesInserted(const QModelIndex&, int, int)
 {
-    update();
+    static QTimer timer(this);
+    static bool timerInitialized = false;
+    if (!timerInitialized)
+    {
+        timer.setInterval(1000);
+        connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
+        connect(&timer, SIGNAL(timeout()), &timer, SLOT(stop()));
+    }
+
+    if (!timer.isActive())
+    {
+        // do not update too often
+        timer.start();
+    }
 }

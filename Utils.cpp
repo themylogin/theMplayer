@@ -91,6 +91,7 @@ QImage Utils::drawOutlinedText(QString text, int width, int height)
     QStringList lines = Utils::wrapText(font, text, width - 2 * textHPadding);
 
     QImage image = QImage(QSize(width, height), QImage::Format_ARGB32);
+    /*
     QPainter painter(&image);
     painter.setRenderHint(QPainter::Antialiasing);
     QPen pen(QColor(0, 0, 0));
@@ -108,6 +109,7 @@ QImage Utils::drawOutlinedText(QString text, int width, int height)
                      font, lines[i]);
         painter.drawPath(path);
     }
+    */
     return image;
 }
 
