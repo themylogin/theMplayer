@@ -43,7 +43,6 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
     this->back = 0;
 }
 
-#include <QDebug>
 void MovieCollection::paintEvent(QPaintEvent* event)
 {
     if (event->region().rectCount() > 1)
@@ -51,8 +50,6 @@ void MovieCollection::paintEvent(QPaintEvent* event)
         // skip recursive repaint
         return;
     }
-
-    qDebug() << "update";
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
@@ -271,4 +268,3 @@ void MovieCollection::futureTextReady()
         this->update();
     }
 }
-

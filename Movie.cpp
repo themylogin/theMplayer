@@ -64,11 +64,8 @@ Movie::Movie(QString title, QString path, QWidget* parent) :
     this->futureTextWatcher.setFuture(this->futureText);
 }
 
-#include <QDebug>
 void Movie::paintEvent(QPaintEvent* event)
 {
-    qDebug() << "movie " << this->title;
-
     (void) event;
 
     if (!this->cachedRepresentations.contains(this->width()))
