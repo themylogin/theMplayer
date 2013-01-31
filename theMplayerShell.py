@@ -31,13 +31,15 @@ class MPlayerShell:
                 "length"    :   -1,
                 "state"     :   state,
             })
-        threading.Thread(target=self.identify_playlist).start()
+        #threading.Thread(target=self.identify_playlist).start()
+        self.identify_playlist()
 
         self.current_file_position = -1
 
-        self.init_x11()
-        self.init_gtk()
+        #self.init_x11()
+        #self.init_gtk()
 
+        print ":)"
         self.play()
 
     def identify_playlist(self):
@@ -123,7 +125,7 @@ class MPlayerShell:
         self.widget.connect("expose-event", expose)
         self.widget.show()
         self.window.add(self.widget)
-        self.window.show()
+        #self.window.show()
 
         gtk.threads_leave()
 
@@ -132,15 +134,14 @@ class MPlayerShell:
 
         self.current_file_position = -1
         for file in self.playlist:
-            path = os.path.join(self.directory, self.current_file)
-
             if file["state"] in [self.PLAYLIST_CURRENT, self.PLAYLIST_SCHEDULED]:
                 file["state"] = self.PLAYLIST_CURRENT
                 start = int(time.time())
+                path = os.path.join(self.directory, file["file"])
 
                 # self.show_window()
 
-                self.current_file = file["file"]
+                #self.current_file = file["file"]
                 mplayer = subprocess.Popen(["mplayer", path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 fcntl.fcntl(mplayer.stdout.fileno(), fcntl.F_SETFL, os.O_NONBLOCK)
                 while mplayer.poll() == None:
@@ -158,7 +159,7 @@ class MPlayerShell:
                 file["state"] = self.PLAYLIST_INACTIVE
 
                 print path, start, end
-                threading.Thread(target=lambda: self.submit_to_timeline(path, self.ctime(path), start, end)).start()
+                self.submit_to_timeline(path, self.ctime(path), start, end)
 
     def ctime(self, path):
         import os
@@ -205,12 +206,12 @@ class MPlayerShell:
         session = session_factory()
 
         session.execute("""
-            INSERT INTO thelogin_microblog
-            (source, source_id, datetime, data)
+            INSERT INTO content_item
+            (type, type_key, created_at, public, data)
             VALUES
-            (:source, :source_id, :datetime, :data)
+            (:source, :source_id, :datetime, 1, :data)
         """, params={
-            "source"    : "movies",
+            "source"    : "movie",
             "source_id" : end,
             "datetime"  : datetime.fromtimestamp(end).strftime("%Y-%m-%d %H:%M:%S"),
             "data"      : simplejson.dumps({ "title" : title, "download" : download, "start" : start })

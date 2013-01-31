@@ -74,7 +74,8 @@ bool MovieCollectionModel::filterAcceptsRow(int sourceRow, const QModelIndex& so
 bool MovieCollectionModel::lessThan(const QModelIndex& left, const QModelIndex& right) const
 {
     qDebug() << "lessThan";
-    return QString::localeAwareCompare(this->fsModel->fileName(left), this->fsModel->fileName(right)) < 0;
+    return false;
+    // return QString::localeAwareCompare(this->fsModel->fileName(left), this->fsModel->fileName(right)) < 0;
 }
 
 bool MovieCollectionModel::isVideoFile(const QModelIndex& fsModelIndex) const

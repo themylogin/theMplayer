@@ -40,6 +40,7 @@ MovieCollection::MovieCollection(MovieCollectionModel* model, const QPersistentM
     this->futureTextWatcher.setFuture(this->futureText);
     this->textLabel.setParent(this);
 
+
     this->back = 0;
 }
 

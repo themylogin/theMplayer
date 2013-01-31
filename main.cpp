@@ -46,8 +46,13 @@ void executeMovieList()
     QSettings settings;
 
     MovieCollectionModel* movieCollectionModel = new MovieCollectionModel(settings.value("directory").toString());
-    MovieCollection* movieCollection = new MovieCollection(movieCollectionModel, movieCollectionModel->getRootIndex());
-    movieCollection->showFullScreen();
+    //MovieCollection* movieCollection = new MovieCollection(movieCollectionModel, movieCollectionModel->getRootIndex());
+    //movieCollection->showFullScreen();
+    QTreeView* tw = new QTreeView();
+    tw->setModel(movieCollectionModel);
+    tw->setRootIndex(movieCollectionModel->getRootIndex());
+    tw->setSortingEnabled(true);
+    tw->showFullScreen();
 }
 
 int main(int argc, char **argv)

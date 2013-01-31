@@ -127,7 +127,6 @@ void Movie::futureImageReadyFromCache()
     {
         this->image = this->futureImage.result();
         this->cachedRepresentations.clear();
-        qDebug() << "loaded from cache";
         this->update();
     }
 }
